@@ -12,25 +12,31 @@ import { Company } from './company/entities/company.entity';
 import { Tag } from './company/entities/tag.entity';
 import { Rating } from './company/entities/rating.entity';
 import { Reservation } from './company/entities/reservation.entity';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+
 
 
 
 
 @Module({
-  imports: [ 
-    TypeOrmModule.forRoot({
-    type: 'mysql',
-    host: 'youtube.cygahsyhplsd.ap-northeast-2.rds.amazonaws.com',
-    port: 3306,
-    username: 'admin',
-    password: 'wqdsdsf123',
-    database: 'ORA',
-    entities: [User, Medical_requiremetns,Shop_menu,Company,Tag,Rating,Reservation],
-    charset: 'utf8mb4',
-    synchronize: true,
-    timezone : "+09:00"
-  }),AuthModule, CompanyModule],
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule], useFactory: (configService: ConfigService) => ({
+        type: 'mysql' as const ,
+        host: configService.get<string>('DB_HOST'),
+        port: configService.get<number>('DB_PORT'),
+        username: configService.get<string>('DB_USERNAME'),
+        password: configService.get<string>('DB_PASSWORD'),
+        database: configService.get<string>('DB_DATABASE'),
+        entities: [User, Medical_requiremetns, Shop_menu, Company, Tag, Rating, Reservation],
+        charset: 'utf8mb4',
+        synchronize: true,
+        timezone: "+09:00"
+      }), inject: [ConfigService],
+    })
+    , AuthModule, CompanyModule],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }
