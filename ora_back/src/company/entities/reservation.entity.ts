@@ -7,10 +7,10 @@ export class Reservation{
     @PrimaryGeneratedColumn()
     id : bigint
 
-    @ManyToOne(() => User, (User) => User.reservation_id)
-    user_id : User
+    @ManyToOne(() => User, (User) => User.reservation)
+    user: User
 
-    @ManyToOne(() => Company , (Company) => Company.reservation_id)
+    @ManyToOne(() => Company , (Company) => Company.reservation)
     company : Company
 
     @Column()

@@ -14,14 +14,14 @@ export class Company {
     @JoinColumn({ name: "userId" })
     user_id : User
 
-    @OneToMany(()=>Tag, (Tag) => Tag.company_id)
-    tag_id : Tag
+    @OneToMany(()=>Tag, (Tag) => Tag.company)
+    tag: Tag
 
     @OneToMany(()=>Shop_menu, (Shop_menu) => Shop_menu.company)
-    shop_id : Shop_menu
+    shop : Shop_menu
 
     @OneToMany(() => Reservation,(Reservation) => Reservation)
-    reservation_id : Reservation
+    reservation: Reservation
 
     @OneToMany(() => Rating, (Rating) => Rating.company)
     rating : Rating

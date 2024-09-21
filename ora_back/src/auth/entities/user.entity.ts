@@ -13,8 +13,8 @@ export class User {
     @OneToMany(()=>Rating, (Rating) => Rating.user_id)
     rating : Rating
 
-    @OneToMany(() => Reservation, (Reservation) =>Reservation.user_id)
-    reservation_id : Reservation
+    @OneToMany(() => Reservation, (Reservation) =>Reservation.user)
+    reservation: Reservation
 
     @Column()
     nickname: string

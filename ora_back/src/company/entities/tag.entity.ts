@@ -6,8 +6,8 @@ export class Tag{
     @PrimaryGeneratedColumn()
     id : bigint
 
-    @ManyToOne(() => Company, (Company) => Company.tag_id)
-    company_id : Company
+    @ManyToOne(() => Company, (Company) => Company.tag)
+    company: Company
 
     @Column({nullable : true})
     first_tag : string
@@ -23,4 +23,5 @@ export class Tag{
 
     @Column({nullable : true})
     five_tag : string
+    
 } 
