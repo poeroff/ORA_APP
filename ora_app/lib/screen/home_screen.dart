@@ -162,7 +162,9 @@ class HomeScreenState extends State<HomeScreen> {
             TextButton(
               onPressed: () async {
                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const LoginScreen()));
+                    builder: (context) => const LoginScreen(
+                          authority: "OWNER",
+                        )));
                 SharedPreferences prefs = await SharedPreferences.getInstance();
                 await prefs.setBool('isLoggedIn', false);
               },

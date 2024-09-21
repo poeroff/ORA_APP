@@ -70,7 +70,7 @@ flutter:
     - images/assets/kakao_lg.png
     - images/assets/Google.png
     - images/assets/Naver.png
-    - images/assets/ActionButton.webp
+    # - images/assets/ActionButton.webp
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

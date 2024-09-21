@@ -4,6 +4,7 @@ import 'package:ora_app/screen/home_screen.dart';
 import 'package:ora_app/screen/login/registration_screen.dart';
 import 'package:ora_app/screen/login_screen.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
+import 'package:ora_app/screen/user_type_selection_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_strategy/url_strategy.dart';
 
@@ -33,7 +34,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: isLoggedIn ? const HomeScreen() : const LoginScreen(),
+      home: isLoggedIn ? const HomeScreen() : const UserTypeSelectionScreen(),
     );
   }
 }

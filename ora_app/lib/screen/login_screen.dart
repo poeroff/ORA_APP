@@ -7,7 +7,9 @@ import 'package:ora_app/screen/login/registration_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+  const LoginScreen({super.key, required this.authority});
+
+  final authority;
 
   @override
   State<StatefulWidget> createState() {
@@ -67,13 +69,16 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color.fromARGB(255, 102, 89, 228),
+      appBar: AppBar(
+        backgroundColor: Color.fromARGB(255, 102, 89, 228),
+      ),
       body: SingleChildScrollView(
         child: Center(
           child: Column(
             children: [
               Container(
                 padding:
-                    EdgeInsets.only(top: 100, left: 65, right: 65, bottom: 70),
+                    EdgeInsets.only(top: 20, left: 65, right: 65, bottom: 70),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
                   child: Image.asset(
