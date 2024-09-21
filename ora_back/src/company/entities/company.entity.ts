@@ -15,6 +15,7 @@ export class Company {
     user_id : User
 
     @OneToMany(()=>Tag, (Tag) => Tag.company)
+    @JoinColumn({ name: "companyId" })
     tag: Tag
 
     @OneToMany(()=>Shop_menu, (Shop_menu) => Shop_menu.company)
