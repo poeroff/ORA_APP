@@ -8,7 +8,7 @@ export class Rating{
     id : bigint
 
     @ManyToOne(() => User, (User) => User.rating)
-    user_id : User
+    user: User
 
     @ManyToOne(() => Company, (Company)=>Company.rating)
     company : Company

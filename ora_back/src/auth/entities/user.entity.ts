@@ -10,7 +10,7 @@ export class User {
     @PrimaryGeneratedColumn()
     id: bigint
 
-    @OneToMany(()=>Rating, (Rating) => Rating.user_id)
+    @OneToMany(()=>Rating, (Rating) => Rating.user)
     rating : Rating
 
     @OneToMany(() => Reservation, (Reservation) =>Reservation.user)
