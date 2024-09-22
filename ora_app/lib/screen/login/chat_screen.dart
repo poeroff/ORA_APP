@@ -11,6 +11,29 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
+  final TextEditingController _sendmessage = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
+  }
+
+  void _scrollToBottom() {
+    _scrollController.animateTo(
+      _scrollController.position.maxScrollExtent,
+      duration: Duration(milliseconds: 300),
+      curve: Curves.easeOut,
+    );
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,6 +49,7 @@ class _ChatScreenState extends State<ChatScreen> {
         children: [
           Expanded(
             child: ListView(
+              controller: _scrollController,
               children: [
                 ChatBubble(
                   message: '안녕하세요, 나 목이 아픈거같아.',
@@ -53,6 +77,20 @@ class _ChatScreenState extends State<ChatScreen> {
                   time: '10:16 AM',
                   imageUrl: 'images/assets/start.webp',
                 ),
+                ChatBubble(
+                  message:
+                      '알겠습니다. 증상을 보니 인후염이나 비염 관련 감염일 가능성이 높습니다. 직접 진찰을 통해 정확한 진단과 치료 계획을 세우는 것이 좋겠습니다. 내원 시 필요한 준비사항은 없습니다.',
+                  isMe: false,
+                  time: '10:16 AM',
+                  imageUrl: 'images/assets/start.webp',
+                ),
+                ChatBubble(
+                  message:
+                      '알겠습니다. 증상을 보니 인후염이나 비염 관련 감염일 가능성이 높습니다. 직접 진찰을 통해 정확한 진단과 치료 계획을 세우는 것이 좋겠습니다. 내원 시 필요한 준비사항은 없습니다.',
+                  isMe: false,
+                  time: '10:16 AM',
+                  imageUrl: 'images/assets/start.webp',
+                ),
               ],
             ),
           ),
@@ -61,16 +99,13 @@ class _ChatScreenState extends State<ChatScreen> {
             child: Row(
               children: [
                 Expanded(
-                  child: TextField(
-                    decoration: InputDecoration(
-                      hintText: 'Type your message here',
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
+                  child: _buildInputField(
+                      '이메일', 'Type your message here', _sendmessage),
                 ),
                 IconButton(
                   icon: Icon(Icons.send),
                   onPressed: () {
+                    print(_sendmessage);
                     // 메시지 전송 로직
                   },
                 ),
@@ -81,6 +116,39 @@ class _ChatScreenState extends State<ChatScreen> {
       ),
     );
   }
+}
+
+Widget _buildInputField(
+    String label, String hintText, TextEditingController controller) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Container(
+        child: TextField(
+          keyboardType: TextInputType.text,
+          style: TextStyle(color: Colors.black),
+          controller: controller,
+          decoration: InputDecoration(
+            fillColor: Colors.white,
+            filled: true,
+            hintText: hintText,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(15),
+              borderSide: BorderSide(color: Colors.grey[300]!),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(15),
+              borderSide: BorderSide(color: Colors.grey[300]!),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(15),
+              borderSide: BorderSide(color: Colors.grey[300]!),
+            ),
+          ),
+        ),
+      ),
+    ],
+  );
 }
 
 class ChatBubble extends StatelessWidget {
