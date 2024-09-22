@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
-import 'package:ora_app/screen/InputField.dart';
 import 'package:ora_app/screen/home_screen.dart';
 import 'package:ora_app/screen/login/registration_screen.dart';
+import 'package:ora_app/screen/user_type_selection_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -19,243 +17,204 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  Future<void> _KakaoButtonPressed() async {
-    try {
-      late OAuthToken token;
-      if (await isKakaoTalkInstalled()) {
-        token = await UserApi.instance.loginWithKakaoTalk();
-        print('카카오톡으로 로그인 성공');
-      } else {
-        token = await UserApi.instance.loginWithKakaoAccount();
-        print('카카오계정으로 로그인 성공');
-      }
-
-      print('액세스 토큰: ${token.accessToken}');
-      print('리프레시 토큰: ${token.refreshToken}');
-
-      // 사용자 정보 가져오기
-      try {
-        User user = await UserApi.instance.me();
-        print('사용자 정보 요청 성공'
-            '\n회원번호: ${user.id}'
-            '\n닉네임: ${user.kakaoAccount?.profile?.nickname}'
-            '\n이메일: ${user.kakaoAccount?.email}');
-      } catch (error) {
-        print('사용자 정보 요청 실패 $error');
-      }
-    } catch (error) {
-      print('카카오 로그인 실패 $error');
-    }
-  }
-
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  late int _submitCount = 0;
+  bool isLoggedIn = false;
+  @override
+  void initState() {
+    super.initState();
+    _loadLoginStatus();
+  }
 
-  void _sendDataToServer() async {
-    print(_emailController.text);
-    print(_passwordController.text);
+  Future<void> _loadLoginStatus() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('isLoggedIn', true);
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (context) => const HomeScreen()),
-    );
     setState(() {
-      _submitCount++;
+      isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Color.fromARGB(255, 102, 89, 228),
-      appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 102, 89, 228),
-      ),
-      body: SingleChildScrollView(
-        child: Center(
+    return WillPopScope(
+      onWillPop: () async {
+        // 여기에 조건을 넣습니다
+        if (isLoggedIn) {
+          return true; // 뒤로 가기 허용
+        } else {
+          Navigator.of(context).pushReplacement(MaterialPageRoute(
+              builder: (context) => const UserTypeSelectionScreen()));
+          return false; // 뒤로 가기 방지
+        }
+      },
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        appBar: AppBar(
+          title: Text('로그인', style: TextStyle(color: Colors.black)),
+          elevation: 0,
+        ),
+        body: SafeArea(
           child: Column(
             children: [
-              Container(
-                padding:
-                    EdgeInsets.only(top: 20, left: 65, right: 65, bottom: 70),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: Image.asset(
-                    'images/assets/capture.PNG',
-                    height: 300,
-                    fit: BoxFit.cover,
+              Expanded(
+                child: Center(
+                  child: SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(height: 10),
+                          _buildInputField('이메일', '이메일', _emailController),
+                          const SizedBox(height: 20),
+                          _buildInputField('비밀번호', '비밀번호', _passwordController),
+                          SizedBox(height: 40),
+                          SizedBox(
+                            width: double.infinity,
+                            height: 55,
+                            child: ElevatedButton(
+                              child: Text(
+                                '로그인',
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 14),
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Color(0xff4255F8),
+                                padding: EdgeInsets.symmetric(vertical: 15),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                              ),
+                              onPressed: () {
+                                Navigator.of(context).pushReplacement(
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const HomeScreen()));
+                              },
+                            ),
+                          ),
+                          SizedBox(height: 20),
+                          SizedBox(
+                            width: double.infinity,
+                            height: 55,
+                            child: OutlinedButton(
+                              child: Text(
+                                '회원가입',
+                                style: TextStyle(
+                                    color: Color(0xff4255F8), fontSize: 14),
+                              ),
+                              style: OutlinedButton.styleFrom(
+                                side: BorderSide(color: Color(0xff4255F8)),
+                                padding: EdgeInsets.symmetric(vertical: 15),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                              ),
+                              onPressed: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) =>
+                                        const RegistrationScreen()));
+                              },
+                            ),
+                          ),
+                          SizedBox(height: 30),
+                          Opacity(
+                            opacity: 0.6,
+                            child: Text(
+                              'SNS계정으로 로그인',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 20),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              CircleAvatar(
+                                  backgroundImage: AssetImage(
+                                      'images/assets/ico_s_kakao_talk.png'),
+                                  radius: 20),
+                              SizedBox(width: 20),
+                              CircleAvatar(
+                                  backgroundImage: AssetImage(
+                                      'images/assets/btnG_아이콘원형.png')),
+                              SizedBox(width: 20),
+                              CircleAvatar(
+                                  backgroundImage:
+                                      AssetImage('images/assets/Google.png')),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
               ),
-              InputField(
-                label: "Email *",
-                hintText: "이메일을 입력해주세요",
-                controller: _emailController,
-                showError: _submitCount > 0,
+              Padding(
+                padding: const EdgeInsets.only(bottom: 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _buildBottomText('아이디 찾기'),
+                    _buildBottomText('     |'),
+                    _buildBottomText('     비밀번호 찾기'),
+                  ],
+                ),
               ),
-              const SizedBox(height: 15),
-              InputField(
-                  label: "Password *",
-                  hintText: "패스워드를 입력해주세요",
-                  controller: _passwordController,
-                  showError: _submitCount > 0),
-              const SizedBox(height: 25),
-              _buildLoginButton(),
-
-              const SizedBox(height: 40),
-              _buildSocialButtons(context), // 새로 추가된 부분
+              const SizedBox(height: 60)
             ],
           ),
         ),
       ),
     );
   }
+}
 
-  Widget _buildInputField(
-      String label, String hintText, TextEditingController controller) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: EdgeInsets.only(left: 25, bottom: 5),
-          child: Text(
-            label,
-            style: TextStyle(color: Colors.black, fontSize: 15),
-          ),
-        ),
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 25),
-          child: TextField(
-            keyboardType: TextInputType.text,
-            style: TextStyle(color: Colors.black),
-            controller: controller,
-            decoration: InputDecoration(
-              fillColor: Colors.white,
-              filled: true,
-              hintText: hintText,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
+Widget _buildBottomText(String text) {
+  return Opacity(
+    opacity: 0.8,
+    child: Text(
+      text,
+      textAlign: TextAlign.center,
+      style: TextStyle(
+        color: Colors.grey,
+        fontSize: 14,
+      ),
+    ),
+  );
+}
+
+Widget _buildInputField(
+    String label, String hintText, TextEditingController controller) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Container(
+        child: TextField(
+          keyboardType: TextInputType.text,
+          style: TextStyle(color: Colors.black),
+          controller: controller,
+          decoration: InputDecoration(
+            fillColor: Colors.white,
+            filled: true,
+            hintText: hintText,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(15),
+              borderSide: BorderSide(color: Colors.grey[300]!),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(15),
+              borderSide: BorderSide(color: Colors.grey[300]!),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(15),
+              borderSide: BorderSide(color: Colors.grey[300]!),
             ),
           ),
         ),
-      ],
-    );
-  }
-
-  Widget _buildLoginButton() {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 25),
-      width: double.infinity,
-      child: ElevatedButton(
-        onPressed: () {
-          _sendDataToServer();
-        },
-        child: const Text("로그인", style: TextStyle(color: Colors.white)),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Color.fromARGB(70, 109, 153, 0),
-          padding: EdgeInsets.symmetric(vertical: 15),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-        ),
       ),
-    );
-  }
-
-  Widget _buildKakaoLoginButton() {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 25),
-      width: double.infinity,
-      child: ElevatedButton(
-        onPressed: () {},
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Color(0xFFFEE500),
-          foregroundColor: Colors.black87,
-          minimumSize: Size(double.infinity, 50),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFFFEE500),
-                foregroundColor: Colors.black87,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              child: Text("카카오 로그인"),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSocialButtons(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 25),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: List.generate(4, (index) {
-          return GestureDetector(
-            onTap: () {
-              if (index == 0) {
-                _KakaoButtonPressed();
-              } else if (index == 3) {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const RegistrationScreen()));
-              }
-            },
-            child: Container(
-              width: 70,
-              height: 70,
-              decoration: BoxDecoration(
-                color: _getContainerColor(index),
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: Colors.grey.shade300),
-              ),
-              child: Center(
-                  child: index == 0
-                      ? Image.asset(
-                          'images/assets/kakao_lg.png',
-                        )
-                      : index == 1
-                          ? Image.asset(
-                              'images/assets/Google.png',
-                            )
-                          : index == 2
-                              ? Image.asset(
-                                  'images/assets/Naver.png',
-                                )
-                              : Text("회원가입")),
-            ),
-          );
-        }),
-      ),
-    );
-  }
-
-  Color _getContainerColor(int index) {
-    switch (index) {
-      case 0:
-        return Colors.yellow;
-      case 2:
-        return Colors.white;
-      default:
-        return Colors.white;
-    }
-  }
+    ],
+  );
 }
