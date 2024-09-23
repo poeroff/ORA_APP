@@ -2,26 +2,25 @@ import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Company } from "./company.entity";
 
 @Entity()
-export class Tag{
+export class Atmosphere{
     @PrimaryGeneratedColumn()
-    id : bigint
+    id : number
 
-    @ManyToOne(() => Company, (Company) => Company.tag)
-    company: Company
-
-    @Column({nullable : true})
-    first_tag : string
+    @ManyToOne(()=>Company, (Company)=>Company.atmosphere)
+    company : Company
 
     @Column({nullable : true})
-    second_tag : string
+    first_atmosphere : string
 
     @Column({nullable : true})
-    three_tag : string
+    second_atmosphere : string
 
     @Column({nullable : true})
-    four_tag : string
+    three_atmosphere : string
 
     @Column({nullable : true})
-    five_tag : string
-    
-} 
+    four_atmosphere : string
+
+    @Column({nullable : true})
+    five_atmosphere : string
+}

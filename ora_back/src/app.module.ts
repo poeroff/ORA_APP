@@ -9,10 +9,11 @@ import { Medical_requiremetns } from './auth/entities/medical_requirements.entit
 import { CompanyModule } from './company/company.module';
 import { Shop_menu } from './company/entities/shop_menu.entity';
 import { Company } from './company/entities/company.entity';
-import { Tag } from './company/entities/tag.entity';
 import { Rating } from './company/entities/rating.entity';
 import { Reservation } from './company/entities/reservation.entity';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { Atmosphere } from './company/entities/atmosphere.entity';
+import { Type } from './company/entities/type.entity';
 
 
 
@@ -29,7 +30,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         username: configService.get<string>('DB_USERNAME'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_DATABASE'),
-        entities: [User, Medical_requiremetns, Shop_menu, Company, Tag, Rating, Reservation],
+        entities: [User, Medical_requiremetns, Shop_menu, Company, Type, Rating, Reservation, Atmosphere],
         charset: 'utf8mb4',
         synchronize: true,
         timezone: "+09:00"

@@ -4,7 +4,7 @@ import { User } from "./user.entity";
 @Entity()
 export class Medical_requiremetns{
     @PrimaryGeneratedColumn()
-    id : bigint
+    id : number
     
     @OneToOne(() => User, {onDelete :"CASCADE"})
     @JoinColumn({ name: "userId" })

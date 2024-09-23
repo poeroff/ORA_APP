@@ -4,13 +4,13 @@ import { Company } from "./company.entity";
 @Entity()
 export class Shop_menu{
     @PrimaryGeneratedColumn()
-    id : bigint
+    id : number
 
     @ManyToOne(() =>  Company)
     company : Company
 
     @Column()
-    menu_name : string
+    item : string
 
     @Column()
     price : number

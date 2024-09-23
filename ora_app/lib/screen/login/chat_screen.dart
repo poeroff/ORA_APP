@@ -54,41 +54,35 @@ class _ChatScreenState extends State<ChatScreen> {
                 ChatBubble(
                   message: '안녕하세요, 나 목이 아픈거같아.',
                   isMe: true,
-                  time: '10:15 AM',
                   imageUrl: 'images/assets/btnG_아이콘원형.png',
                 ),
                 ChatBubble(
                   message:
                       '네, 목 증상이 언제부터 시작되었고, 통증 양상은 어떤가요? 수기적으로 봐야될 것 같아 보입니다. 직접오실 수 있으신가요?',
                   isMe: false,
-                  time: '10:15 AM',
                   imageUrl: 'images/assets/start.webp',
                 ),
                 ChatBubble(
                   message: '수요일부터 목이 아프고 통증은 삼킬때, 그리고 가래가 끓는것과, 목소리도 갈라지고 간조함.',
                   isMe: true,
-                  time: '10:16 AM',
                   imageUrl: 'images/assets/btnG_아이콘원형.png',
                 ),
                 ChatBubble(
                   message:
                       '알겠습니다. 증상을 보니 인후염이나 비염 관련 감염일 가능성이 높습니다. 직접 진찰을 통해 정확한 진단과 치료 계획을 세우는 것이 좋겠습니다. 내원 시 필요한 준비사항은 없습니다.',
                   isMe: false,
-                  time: '10:16 AM',
                   imageUrl: 'images/assets/start.webp',
                 ),
                 ChatBubble(
                   message:
                       '알겠습니다. 증상을 보니 인후염이나 비염 관련 감염일 가능성이 높습니다. 직접 진찰을 통해 정확한 진단과 치료 계획을 세우는 것이 좋겠습니다. 내원 시 필요한 준비사항은 없습니다.',
                   isMe: false,
-                  time: '10:16 AM',
                   imageUrl: 'images/assets/start.webp',
                 ),
                 ChatBubble(
                   message:
                       '알겠습니다. 증상을 보니 인후염이나 비염 관련 감염일 가능성이 높습니다. 직접 진찰을 통해 정확한 진단과 치료 계획을 세우는 것이 좋겠습니다. 내원 시 필요한 준비사항은 없습니다.',
                   isMe: false,
-                  time: '10:16 AM',
                   imageUrl: 'images/assets/start.webp',
                 ),
               ],
@@ -154,14 +148,13 @@ Widget _buildInputField(
 class ChatBubble extends StatelessWidget {
   final String message;
   final bool isMe;
-  final String time;
+
   final String imageUrl;
 
   const ChatBubble({
     Key? key,
     required this.message,
     required this.isMe,
-    required this.time,
     required this.imageUrl,
   }) : super(key: key);
 
@@ -206,10 +199,6 @@ class ChatBubble extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: 2),
-                    Text(
-                      time,
-                      style: TextStyle(fontSize: 12, color: Colors.grey[600]),
-                    ),
                   ],
                 ),
               ),

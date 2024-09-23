@@ -5,7 +5,7 @@ import { Company } from "./company.entity";
 @Entity()
 export class Reservation{
     @PrimaryGeneratedColumn()
-    id : bigint
+    id : number
 
     @ManyToOne(() => User, (User) => User.reservation)
     user: User

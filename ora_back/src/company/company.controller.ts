@@ -13,13 +13,13 @@ export class CompanyController {
   }
 
   @Get()
-  findAll() {
-    return this.companyService.findAll();
+  findall_company() {
+    return this.companyService.findall_company();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.companyService.findOne(+id);
+  find_company(@Param('id') id: string) {
+    return this.companyService.find_company(+id);
   }
 
   @Patch(':id')
