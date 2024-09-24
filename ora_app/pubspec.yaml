@@ -40,6 +40,8 @@ dependencies:
   url_strategy: ^0.3.0
   flutter_native_splash: ^2.4.1
   shared_preferences: ^2.3.2
+  uuid: ^4.5.0
+  http: ^1.2.2
 
 dev_dependencies:
   flutter_test:
@@ -70,10 +72,10 @@ flutter:
     - images/assets/kakao_lg.png
     - images/assets/Google.png
     - images/assets/Naver.png
-    - images/assets/start.webp
+    - images/assets/start_picture.webp
     - images/assets/ico_s_kakao_talk.png
     - images/assets/btnG_아이콘원형.png
-    - images/assets/텍스트.webp
+    - images/assets/text.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
@@ -104,5 +106,5 @@ flutter:
 
 flutter_native_splash:
   color: "#FFFFFF"  # 흰색 배경
-  image: images/assets/start.webp  # 중앙에 표시할 이미지
+  image: images/assets/start_picture.webp  # 중앙에 표시할 이미지
   fullscreen: true  # 전체 화면 모드 (선택 사항)

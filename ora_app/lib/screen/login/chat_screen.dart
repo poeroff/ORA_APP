@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:ora_app/model/chat.model.dart';
+import 'dart:async';
+
+import 'package:ora_app/provider/chat.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -13,6 +17,11 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _sendmessage = TextEditingController();
   final ScrollController _scrollController = ScrollController();
+  List<Chat> chat = [];
+  final ChatApi _chatapi = ChatApi();
+
+  final StreamController<List<Chat>> _chatStreamController =
+      StreamController<List<Chat>>.broadcast();
 
   @override
   void initState() {
@@ -28,9 +37,24 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 
+  void _addMessage(String message, bool isMe) async {
+    setState(() {
+      chat.add(Chat(message: message));
+      _chatStreamController.add(chat);
+    });
+
+    String aiResponse = await _chatapi.getNews(message);
+    setState(() {
+      chat.add(Chat(message: aiResponse));
+      _chatStreamController.add(chat);
+    });
+    _scrollToBottom();
+  }
+
   @override
   void dispose() {
     _scrollController.dispose();
+    _chatStreamController.close();
     super.dispose();
   }
 
@@ -39,7 +63,7 @@ class _ChatScreenState extends State<ChatScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Image.asset(
-          "images/assets/텍스트.webp",
+          "images/assets/text.png",
           fit: BoxFit.contain,
           height: 50,
         ),
@@ -48,44 +72,29 @@ class _ChatScreenState extends State<ChatScreen> {
       body: Column(
         children: [
           Expanded(
-            child: ListView(
-              controller: _scrollController,
-              children: [
-                ChatBubble(
-                  message: '안녕하세요, 나 목이 아픈거같아.',
-                  isMe: true,
-                  imageUrl: 'images/assets/btnG_아이콘원형.png',
-                ),
-                ChatBubble(
-                  message:
-                      '네, 목 증상이 언제부터 시작되었고, 통증 양상은 어떤가요? 수기적으로 봐야될 것 같아 보입니다. 직접오실 수 있으신가요?',
-                  isMe: false,
-                  imageUrl: 'images/assets/start.webp',
-                ),
-                ChatBubble(
-                  message: '수요일부터 목이 아프고 통증은 삼킬때, 그리고 가래가 끓는것과, 목소리도 갈라지고 간조함.',
-                  isMe: true,
-                  imageUrl: 'images/assets/btnG_아이콘원형.png',
-                ),
-                ChatBubble(
-                  message:
-                      '알겠습니다. 증상을 보니 인후염이나 비염 관련 감염일 가능성이 높습니다. 직접 진찰을 통해 정확한 진단과 치료 계획을 세우는 것이 좋겠습니다. 내원 시 필요한 준비사항은 없습니다.',
-                  isMe: false,
-                  imageUrl: 'images/assets/start.webp',
-                ),
-                ChatBubble(
-                  message:
-                      '알겠습니다. 증상을 보니 인후염이나 비염 관련 감염일 가능성이 높습니다. 직접 진찰을 통해 정확한 진단과 치료 계획을 세우는 것이 좋겠습니다. 내원 시 필요한 준비사항은 없습니다.',
-                  isMe: false,
-                  imageUrl: 'images/assets/start.webp',
-                ),
-                ChatBubble(
-                  message:
-                      '알겠습니다. 증상을 보니 인후염이나 비염 관련 감염일 가능성이 높습니다. 직접 진찰을 통해 정확한 진단과 치료 계획을 세우는 것이 좋겠습니다. 내원 시 필요한 준비사항은 없습니다.',
-                  isMe: false,
-                  imageUrl: 'images/assets/start.webp',
-                ),
-              ],
+            child: StreamBuilder<List<Chat>>(
+              stream: _chatStreamController.stream,
+              initialData: chat,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return ListView.builder(
+                    controller: _scrollController,
+                    itemCount: snapshot.data!.length,
+                    itemBuilder: (context, index) {
+                      final chat = snapshot.data![index];
+                      return ChatBubble(
+                        message: chat.message,
+                        isMe: index % 2 == 0, // 예시: 짝수 인덱스는 사용자 메시지
+                        imageUrl: index % 2 == 0
+                            ? 'images/assets/btnG_아이콘원형.png'
+                            : 'images/assets/start_picture.webp',
+                      );
+                    },
+                  );
+                } else {
+                  return Center(child: CircularProgressIndicator());
+                }
+              },
             ),
           ),
           Padding(
@@ -99,7 +108,10 @@ class _ChatScreenState extends State<ChatScreen> {
                 IconButton(
                   icon: Icon(Icons.send),
                   onPressed: () {
-                    print(_sendmessage);
+                    if (_sendmessage.text.isNotEmpty) {
+                      _addMessage(_sendmessage.text, true);
+                      _sendmessage.clear();
+                    }
                     // 메시지 전송 로직
                   },
                 ),
