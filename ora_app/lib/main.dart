@@ -29,12 +29,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     FlutterNativeSplash.remove();
     return MaterialApp(
-      title: 'ORA',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: isLoggedIn ? const HomeScreen() : const UserTypeSelectionScreen(),
-    );
+        title: 'ORA',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          useMaterial3: true,
+        ),
+        home:
+            isLoggedIn ? const HomeScreen() : const UserTypeSelectionScreen());
   }
 }

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:ora_app/model/chat.model.dart';
 import 'dart:async';
 
 import 'package:ora_app/provider/chat.dart';
+import 'package:ora_app/service/LocationService.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -17,6 +19,7 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _sendmessage = TextEditingController();
   final ScrollController _scrollController = ScrollController();
+  final Locationservice _locationservice = Locationservice();
   List<Chat> chat = [];
   final ChatApi _chatapi = ChatApi();
 
@@ -26,7 +29,13 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void initState() {
     super.initState();
+    _initializeLocation();
     WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
+  }
+
+  Future<void> _initializeLocation() async {
+    Position position = await _locationservice.getLocation();
+    print(position);
   }
 
   void _scrollToBottom() {
