@@ -27,7 +27,7 @@ class Locationservice {
     }
 
     // 여기에 위치를 가져오는 코드를 작성
-    return await await Geolocator.getCurrentPosition();
+    return await Geolocator.getCurrentPosition();
     // position을 사용하여 필요한 작업 수행
   }
 }

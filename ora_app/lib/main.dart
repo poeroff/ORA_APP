@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:ora_app/screen/home_screen.dart';
-import 'package:ora_app/screen/login/registration_screen.dart';
-import 'package:ora_app/screen/login_screen.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:ora_app/screen/user_type_selection_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_strategy/url_strategy.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-void main() async {
+Future<void> main() async {
+  await dotenv.load(fileName: ".env");
   FlutterNativeSplash.preserve(
       widgetsBinding: WidgetsFlutterBinding.ensureInitialized());
   SharedPreferences prefs = await SharedPreferences.getInstance();
   bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
 
-  KakaoSdk.init(nativeAppKey: '73038fd54a619ad7e3c051035e6db6a4');
+  KakaoSdk.init(nativeAppKey: dotenv.env["KAKAO_NATIVEAPPKEY"]);
   setPathUrlStrategy();
   runApp(MyApp(isLoggedIn: isLoggedIn));
 }

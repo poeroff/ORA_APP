@@ -41,7 +41,7 @@ class _ChatScreenState extends State<ChatScreen> {
   void _scrollToBottom() {
     _scrollController.animateTo(
       _scrollController.position.maxScrollExtent,
-      duration: Duration(milliseconds: 300),
+      duration: const Duration(milliseconds: 300),
       curve: Curves.easeOut,
     );
   }
@@ -73,8 +73,8 @@ class _ChatScreenState extends State<ChatScreen> {
       appBar: AppBar(
         title: Image.asset(
           "images/assets/text.png",
-          fit: BoxFit.contain,
-          height: 50,
+          fit: BoxFit.cover,
+          height: 200,
         ),
         centerTitle: true,
       ),
@@ -101,7 +101,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     },
                   );
                 } else {
-                  return Center(child: CircularProgressIndicator());
+                  return const Center(child: CircularProgressIndicator());
                 }
               },
             ),
@@ -115,7 +115,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       '이메일', 'Type your message here', _sendmessage),
                 ),
                 IconButton(
-                  icon: Icon(Icons.send),
+                  icon: const Icon(Icons.send),
                   onPressed: () {
                     if (_sendmessage.text.isNotEmpty) {
                       _addMessage(_sendmessage.text, true);
@@ -141,7 +141,7 @@ Widget _buildInputField(
       Container(
         child: TextField(
           keyboardType: TextInputType.text,
-          style: TextStyle(color: Colors.black),
+          style: const TextStyle(color: Colors.black),
           controller: controller,
           decoration: InputDecoration(
             fillColor: Colors.white,
@@ -173,11 +173,11 @@ class ChatBubble extends StatelessWidget {
   final String imageUrl;
 
   const ChatBubble({
-    Key? key,
+    super.key,
     required this.message,
     required this.isMe,
     required this.imageUrl,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -197,11 +197,11 @@ class ChatBubble extends StatelessWidget {
                       isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
                   children: [
                     if (!isMe) _buildAvatar(),
-                    SizedBox(
+                    const SizedBox(
                       height: 5,
                     ),
                     if (isMe) _buildAvatar(),
-                    SizedBox(
+                    const SizedBox(
                       height: 5,
                     ),
                     Container(
@@ -212,14 +212,14 @@ class ChatBubble extends StatelessWidget {
                         color: isMe ? Colors.blue[100] : Colors.grey[300],
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      padding:
-                          EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 10, horizontal: 15),
                       child: Text(
                         message,
                         softWrap: true,
                       ),
                     ),
-                    SizedBox(height: 2),
+                    const SizedBox(height: 2),
                   ],
                 ),
               ),

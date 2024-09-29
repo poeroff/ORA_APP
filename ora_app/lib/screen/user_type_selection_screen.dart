@@ -35,7 +35,7 @@ class _UserTypeSelectionScreenState extends State<UserTypeSelectionScreen> {
                   style: TextStyle(
                       fontSize: baseFontSize * 1.5,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xff4255F8)),
+                      color: const Color(0xff4255F8)),
                 ),
                 Text(
                   '어떤 서비스를 이용하시나요?',
@@ -43,7 +43,7 @@ class _UserTypeSelectionScreenState extends State<UserTypeSelectionScreen> {
                       fontSize: baseFontSize * 1.5,
                       fontWeight: FontWeight.bold),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 _buildOptionCard(
                   icon: Icons.calendar_today,
                   title: '예약을 관리하고 싶어요',
@@ -56,12 +56,12 @@ class _UserTypeSelectionScreenState extends State<UserTypeSelectionScreen> {
                       isSecondCardSelected = false;
                     });
                     Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => LoginScreen(
+                        builder: (context) => const LoginScreen(
                               authority: "owner",
                             )));
                   },
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 _buildOptionCard(
                   icon: Icons.person,
                   title: '예약을 하고 싶어요',
@@ -74,7 +74,7 @@ class _UserTypeSelectionScreenState extends State<UserTypeSelectionScreen> {
                       isFirstCardSelected = false;
                     });
                     Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => LoginScreen(
+                        builder: (context) => const LoginScreen(
                               authority: "user",
                             )));
                   },
@@ -98,7 +98,7 @@ Widget _buildOptionCard(
   return Card(
     elevation: 2,
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-    color: isSelected ? Color(0xff4255F8) : Colors.white,
+    color: isSelected ? const Color(0xff4255F8) : Colors.white,
     child: InkWell(
       onTap: onTap,
       child: Padding(
@@ -117,7 +117,7 @@ Widget _buildOptionCard(
                       color: isSelected ? Colors.white : Colors.black,
                     ),
                   ),
-                  SizedBox(height: 4),
+                  const SizedBox(height: 4),
                   Text(
                     subtitle,
                     style: TextStyle(
@@ -128,7 +128,7 @@ Widget _buildOptionCard(
                 ],
               ),
             ),
-            SizedBox(width: 20),
+            const SizedBox(width: 20),
             Icon(icon,
                 size: 40, color: isSelected ? Colors.white : Colors.black),
           ],

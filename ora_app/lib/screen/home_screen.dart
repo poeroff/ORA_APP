@@ -52,7 +52,7 @@ class HomeScreenState extends State<HomeScreen> {
                       color: Colors.black.withOpacity(0.2),
                       spreadRadius: 1,
                       blurRadius: 3,
-                      offset: Offset(0, 1),
+                      offset: const Offset(0, 1),
                     ),
                   ],
                 ),
@@ -68,7 +68,7 @@ class HomeScreenState extends State<HomeScreen> {
         ],
       ),
       body: <Widget>[
-        MainScreen(),
+        const MainScreen(),
         const Padding(
           padding: EdgeInsets.all(8.0),
           child: Column(
@@ -191,10 +191,10 @@ class CustomNavigationBar extends StatelessWidget {
   final Function(int) onTap;
 
   const CustomNavigationBar({
-    Key? key,
+    super.key,
     required this.currentIndex,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -207,7 +207,7 @@ class CustomNavigationBar extends StatelessWidget {
             color: Colors.grey.withOpacity(0.3),
             spreadRadius: 1,
             blurRadius: 5,
-            offset: Offset(0, -1),
+            offset: const Offset(0, -1),
           ),
         ],
       ),
@@ -217,7 +217,7 @@ class CustomNavigationBar extends StatelessWidget {
           _buildNavItem(Icons.home, Icons.home_outlined, '홈', 0),
           _buildNavItem(
               Icons.calendar_today, Icons.calendar_today_outlined, '예약', 1),
-          SizedBox(width: 60), // 가운데 버튼을 위한 공간
+          const SizedBox(width: 60), // 가운데 버튼을 위한 공간
           _buildNavItem(Icons.person, Icons.person_outline, 'MY', 2),
           _buildNavItem(Icons.more_horiz, Icons.more_horiz_outlined, '더보기', 3),
         ],
@@ -231,18 +231,18 @@ class CustomNavigationBar extends StatelessWidget {
     return GestureDetector(
       onTap: () => onTap(index),
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(
               isSelected ? selectedIcon : unselectedIcon,
-              color: isSelected ? Color(0xff4255F8) : Colors.black,
+              color: isSelected ? const Color(0xff4255F8) : Colors.black,
             ),
             Text(
               label,
               style: TextStyle(
-                color: isSelected ? Color(0xff4255F8) : Colors.black,
+                color: isSelected ? const Color(0xff4255F8) : Colors.black,
                 fontSize: 12,
               ),
             ),

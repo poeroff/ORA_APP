@@ -7,7 +7,8 @@ class InputField extends StatefulWidget {
   final void Function(bool)? onValidityChanged;
   final bool showError;
 
-  InputField({
+  const InputField({
+    super.key,
     required this.label,
     required this.hintText,
     required this.controller,
@@ -50,20 +51,20 @@ class _InputFieldState extends State<InputField> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: EdgeInsets.only(left: 25, bottom: 5),
+          padding: const EdgeInsets.only(left: 25, bottom: 5),
           child: Text(
             widget.label,
-            style: TextStyle(color: Colors.black, fontSize: 15),
+            style: const TextStyle(color: Colors.black, fontSize: 15),
           ),
         ),
         Container(
-          padding: EdgeInsets.symmetric(horizontal: 25),
+          padding: const EdgeInsets.symmetric(horizontal: 25),
           child: ValueListenableBuilder<bool>(
             valueListenable: _isEmptyNotifier,
             builder: (context, isEmpty, child) {
               return TextField(
                 keyboardType: TextInputType.text,
-                style: TextStyle(color: Colors.black),
+                style: const TextStyle(color: Colors.black),
                 controller: widget.controller,
                 onChanged: (value) => {
                   _validateInput(),

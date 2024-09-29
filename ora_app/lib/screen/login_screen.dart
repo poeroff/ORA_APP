@@ -49,7 +49,7 @@ class _LoginScreenState extends State<LoginScreen> {
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
-          title: Text('로그인', style: TextStyle(color: Colors.black)),
+          title: const Text('로그인', style: TextStyle(color: Colors.black)),
           elevation: 0,
         ),
         body: SafeArea(
@@ -63,23 +63,19 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          SizedBox(height: 10),
+                          const SizedBox(height: 10),
                           _buildInputField('이메일', '이메일', _emailController),
                           const SizedBox(height: 20),
                           _buildInputField('비밀번호', '비밀번호', _passwordController),
-                          SizedBox(height: 40),
+                          const SizedBox(height: 40),
                           SizedBox(
                             width: double.infinity,
                             height: 55,
                             child: ElevatedButton(
-                              child: Text(
-                                '로그인',
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 14),
-                              ),
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Color(0xff4255F8),
-                                padding: EdgeInsets.symmetric(vertical: 15),
+                                backgroundColor: const Color(0xff4255F8),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 15),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(20),
                                 ),
@@ -90,21 +86,23 @@ class _LoginScreenState extends State<LoginScreen> {
                                         builder: (context) =>
                                             const HomeScreen()));
                               },
+                              child: Text(
+                                '로그인',
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 14),
+                              ),
                             ),
                           ),
-                          SizedBox(height: 20),
+                          const SizedBox(height: 20),
                           SizedBox(
                             width: double.infinity,
                             height: 55,
                             child: OutlinedButton(
-                              child: Text(
-                                '회원가입',
-                                style: TextStyle(
-                                    color: Color(0xff4255F8), fontSize: 14),
-                              ),
                               style: OutlinedButton.styleFrom(
-                                side: BorderSide(color: Color(0xff4255F8)),
-                                padding: EdgeInsets.symmetric(vertical: 15),
+                                side:
+                                    const BorderSide(color: Color(0xff4255F8)),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 15),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(20),
                                 ),
@@ -114,10 +112,15 @@ class _LoginScreenState extends State<LoginScreen> {
                                     builder: (context) =>
                                         const RegistrationScreen()));
                               },
+                              child: Text(
+                                '회원가입',
+                                style: TextStyle(
+                                    color: Color(0xff4255F8), fontSize: 14),
+                              ),
                             ),
                           ),
-                          SizedBox(height: 30),
-                          Opacity(
+                          const SizedBox(height: 30),
+                          const Opacity(
                             opacity: 0.6,
                             child: Text(
                               'SNS계정으로 로그인',
@@ -128,8 +131,8 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                             ),
                           ),
-                          SizedBox(height: 20),
-                          Row(
+                          const SizedBox(height: 20),
+                          const Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               CircleAvatar(
@@ -178,7 +181,7 @@ Widget _buildBottomText(String text) {
     child: Text(
       text,
       textAlign: TextAlign.center,
-      style: TextStyle(
+      style: const TextStyle(
         color: Colors.grey,
         fontSize: 14,
       ),
@@ -194,7 +197,7 @@ Widget _buildInputField(
       Container(
         child: TextField(
           keyboardType: TextInputType.text,
-          style: TextStyle(color: Colors.black),
+          style: const TextStyle(color: Colors.black),
           controller: controller,
           decoration: InputDecoration(
             fillColor: Colors.white,

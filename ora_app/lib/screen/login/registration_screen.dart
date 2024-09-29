@@ -62,17 +62,17 @@ class RegistrationScreen extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: EdgeInsets.only(left: 25, bottom: 5),
+          padding: const EdgeInsets.only(left: 25, bottom: 5),
           child: Text(
             label,
-            style: TextStyle(color: Colors.black, fontSize: 15),
+            style: const TextStyle(color: Colors.black, fontSize: 15),
           ),
         ),
         Container(
-          padding: EdgeInsets.symmetric(horizontal: 25),
+          padding: const EdgeInsets.symmetric(horizontal: 25),
           child: TextField(
             keyboardType: TextInputType.text,
-            style: TextStyle(color: Colors.black),
+            style: const TextStyle(color: Colors.black),
             decoration: InputDecoration(
               fillColor: Colors.white,
               filled: true,
@@ -95,28 +95,28 @@ class RegistrationScreen extends StatelessWidget {
 
   Widget _buildSignupButton() {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 25),
+      padding: const EdgeInsets.symmetric(horizontal: 25),
       width: double.infinity,
       child: ElevatedButton(
         onPressed: () async {
           SharedPreferences prefs = await SharedPreferences.getInstance();
           await prefs.setBool('isLoggedIn', false);
         },
-        child: const Text("회원 가입", style: TextStyle(color: Colors.white)),
         style: ElevatedButton.styleFrom(
-          backgroundColor: Color.fromARGB(255, 102, 89, 228),
-          padding: EdgeInsets.symmetric(vertical: 15),
+          backgroundColor: const Color.fromARGB(255, 102, 89, 228),
+          padding: const EdgeInsets.symmetric(vertical: 15),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
         ),
+        child: const Text("회원 가입", style: TextStyle(color: Colors.white)),
       ),
     );
   }
 
   Widget _buildEmailWithVerification() {
     return Container(
-      padding: EdgeInsets.only(left: 25, bottom: 5),
+      padding: const EdgeInsets.only(left: 25, bottom: 5),
       width: 400,
       child: Row(
         children: [
@@ -137,7 +137,7 @@ class RegistrationScreen extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(width: 10),
+          const SizedBox(width: 10),
           Expanded(
             flex: 3,
             child: SizedBox(
@@ -146,10 +146,10 @@ class RegistrationScreen extends StatelessWidget {
                 onPressed: () {
                   // 이메일 인증 로직
                 },
-                child: Text('인증'),
                 style: ElevatedButton.styleFrom(
                   padding: EdgeInsets.zero,
                 ),
+                child: Text('인증'),
               ),
             ),
           ),
