@@ -6,6 +6,7 @@ import 'dart:async';
 
 import 'package:ora_app/provider/chat.dart';
 import 'package:ora_app/service/LocationService.dart';
+import 'package:ora_app/service/getAddressFromCoordinates.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -20,6 +21,8 @@ class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _sendmessage = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   final Locationservice _locationservice = Locationservice();
+  final GetAddress _address = GetAddress();
+  String currentAddress = '';
   List<Chat> chat = [];
   final ChatApi _chatapi = ChatApi();
 
@@ -35,7 +38,10 @@ class _ChatScreenState extends State<ChatScreen> {
 
   Future<void> _initializeLocation() async {
     Position position = await _locationservice.getLocation();
-    print(position);
+
+    currentAddress = await _address.getAddressFromCoordinates(
+        position.latitude, position.longitude);
+    print(currentAddress);
   }
 
   void _scrollToBottom() {
@@ -52,7 +58,7 @@ class _ChatScreenState extends State<ChatScreen> {
       _chatStreamController.add(chat);
     });
 
-    String aiResponse = await _chatapi.getNews(message);
+    String aiResponse = await _chatapi.getmessage(message, currentAddress);
     setState(() {
       chat.add(Chat(message: aiResponse));
       _chatStreamController.add(chat);

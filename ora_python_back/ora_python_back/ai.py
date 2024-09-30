@@ -204,7 +204,7 @@ async def handle_conversation(conversation, user_input, store_data):
     return intent_response  # 가게 정보가 없으면 일반 대화 스타일 응답
 
 # 대화
-async def chat_with_oracle(store_data,user_input):
+async def chat_with_oracle(store_data,user_input,address):
     conversation = initialize_conversation()
     print("안녕하세요, '안녕오라'라고 입력하여 대화를 시작하세요.")
     while True:
@@ -217,18 +217,20 @@ async def chat_with_oracle(store_data,user_input):
             # OpenAI API를 통해 유동적인 응답 생성
             response = await handle_conversation(conversation, user_input, store_data)
             # print(f"오라: {response}")
+            
             return response  
 @csrf_exempt 
 async def start_conversation(request):
-    
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
             user_input = data.get('message')
+            address = data.get('address')
+            print(address)
             if user_input is None:
                 return JsonResponse({'error': 'Missing message parameter'}, status=400)
             store_data = await get_data_from_db()
-            response = await chat_with_oracle(store_data, user_input)
+            response = await chat_with_oracle(store_data, user_input,address)
             return JsonResponse({'message': response})
         except json.JSONDecodeError:
             return JsonResponse({'error': 'Invalid JSON'}, status=400)
