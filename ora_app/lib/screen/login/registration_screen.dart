@@ -149,7 +149,7 @@ class RegistrationScreen extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   padding: EdgeInsets.zero,
                 ),
-                child: Text('인증'),
+                child: const Text('인증'),
               ),
             ),
           ),

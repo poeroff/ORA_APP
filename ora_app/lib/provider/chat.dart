@@ -1,8 +1,10 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import "dart:convert";
 
 class ChatApi {
-  static String apiUri = "http://10.0.2.2:8000/start_conversation";
+  static String apiUri =
+      "${dotenv.env["PYTHON_BACKEND_ADDRESS"]}/start_conversation";
 
   Uri uri = Uri.parse(apiUri);
 

@@ -15,6 +15,7 @@ Future<void> main() async {
   bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
 
   KakaoSdk.init(nativeAppKey: dotenv.env["KAKAO_NATIVEAPPKEY"]);
+
   setPathUrlStrategy();
   runApp(MyApp(isLoggedIn: isLoggedIn));
 }

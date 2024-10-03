@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 import 'package:ora_app/screen/home_screen.dart';
 import 'package:ora_app/screen/login/registration_screen.dart';
 import 'package:ora_app/screen/user_type_selection_screen.dart';
@@ -17,6 +19,35 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  Future<void> _KaKaologinButton() async {
+    try {
+      late OAuthToken token;
+      if (await isKakaoTalkInstalled()) {
+        token = await UserApi.instance.loginWithKakaoTalk();
+        print('카카오톡으로 로그인 성공');
+      } else {
+        token = await UserApi.instance.loginWithKakaoAccount();
+        print('카카오계정으로 로그인 성공');
+      }
+
+      print('액세스 토큰: ${token.accessToken}');
+      print('리프레시 토큰: ${token.refreshToken}');
+
+      // 사용자 정보 가져오기
+      try {
+        User user = await UserApi.instance.me();
+        print('사용자 정보 요청 성공'
+            '\n회원번호: ${user.id}'
+            '\n닉네임: ${user.kakaoAccount?.profile?.nickname}'
+            '\n이메일: ${user.kakaoAccount?.email}');
+      } catch (error) {
+        print('사용자 정보 요청 실패 $error');
+      }
+    } catch (error) {
+      print('카카오 로그인 실패 $error');
+    }
+  }
+
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool isLoggedIn = false;
@@ -86,7 +117,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                         builder: (context) =>
                                             const HomeScreen()));
                               },
-                              child: Text(
+                              child: const Text(
                                 '로그인',
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 14),
@@ -112,7 +143,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     builder: (context) =>
                                         const RegistrationScreen()));
                               },
-                              child: Text(
+                              child: const Text(
                                 '회원가입',
                                 style: TextStyle(
                                     color: Color(0xff4255F8), fontSize: 14),
@@ -132,19 +163,23 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                           const SizedBox(height: 20),
-                          const Row(
+                          Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              CircleAvatar(
+                              GestureDetector(
+                                onTap: _KaKaologinButton,
+                                child: const CircleAvatar(
                                   backgroundImage: AssetImage(
                                       'images/assets/ico_s_kakao_talk.png'),
-                                  radius: 20),
-                              SizedBox(width: 20),
-                              CircleAvatar(
+                                  radius: 20,
+                                ),
+                              ),
+                              const SizedBox(width: 20),
+                              const CircleAvatar(
                                   backgroundImage: AssetImage(
                                       'images/assets/btnG_아이콘원형.png')),
-                              SizedBox(width: 20),
-                              CircleAvatar(
+                              const SizedBox(width: 20),
+                              const CircleAvatar(
                                   backgroundImage:
                                       AssetImage('images/assets/Google.png')),
                             ],

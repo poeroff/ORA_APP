@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:ora_app/model/chat.model.dart';
 import 'dart:async';
@@ -41,7 +40,6 @@ class _ChatScreenState extends State<ChatScreen> {
 
     currentAddress = await _address.getAddressFromCoordinates(
         position.latitude, position.longitude);
-    print(currentAddress);
   }
 
   void _scrollToBottom() {
