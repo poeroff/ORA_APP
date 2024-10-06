@@ -1,0 +1,25 @@
+name: ora-app
+app: node@16
+options:
+  env:
+    - name: DB_HOST
+      value: youtube.cygahsyhplsd.ap-northeast-2.rds.amazonaws.com
+    - name: DB_PORT
+      value: "3306"
+    - name: DB_USERNAME
+      value: admin
+    - name: DB_PASSWORD
+      value: wqdsdsf123
+    - name: DB_DATABASE
+      value: ORA
+  ports: "4000"
+  install: npm ci
+  build: npm run build
+  start: npm run start:dev
+  buildenv: []
+context:
+  git:
+    url: https://github.com/poeroff/ORA_APP.git
+    branch: ora_back
+    ref : main
+  preset: node
