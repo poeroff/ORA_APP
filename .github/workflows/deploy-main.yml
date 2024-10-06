@@ -26,7 +26,7 @@ jobs:
             options:
               env:
                 - name: DB_HOST
-                  value: ${DB_HOST}
+                  value: ${{ secrets.DB_HOST }}
                 - name: DB_PORT
                   value: "3306"
                 - name: DB_USERNAME
