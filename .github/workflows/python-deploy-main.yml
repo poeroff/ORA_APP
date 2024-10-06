@@ -28,7 +28,7 @@ jobs:
             options:
               env:
                 - name: APIKEY
-                  value: ${APIKEY}
+                  value: ${AI_APiKEY}
               ports: 8000
               start: python3 manage.py runserver 0:8000
               buildenv: []

@@ -14,7 +14,7 @@ import { Reservation } from './company/entities/reservation.entity';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Atmosphere } from './company/entities/atmosphere.entity';
 import { Type } from './company/entities/type.entity';
-import configuration from 'config/configuration';
+
 
 
 
@@ -22,7 +22,7 @@ import configuration from 'config/configuration';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true,load: [configuration] }),
+    ConfigModule.forRoot({ isGlobal: true}),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule], useFactory: (configService: ConfigService) => ({
         type: 'mysql' as const ,
