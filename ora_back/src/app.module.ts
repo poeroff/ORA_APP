@@ -14,6 +14,7 @@ import { Reservation } from './company/entities/reservation.entity';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Atmosphere } from './company/entities/atmosphere.entity';
 import { Type } from './company/entities/type.entity';
+import configuration from 'config/configuration';
 
 
 
