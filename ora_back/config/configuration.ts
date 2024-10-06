@@ -2,8 +2,8 @@ import { readFileSync } from 'fs';
 import * as yaml from 'js-yaml';
 import { join } from 'path';
 
-const DEPLOY_MAIN_YAML_PATH = join(__dirname, '..', '..', '.github', 'workflows', 'deploy-main.yml');
-const ORA_APP_YAML_PATH = join(__dirname, '..', 'ora_back', 'ora-app.yaml');
+const DEPLOY_MAIN_YAML_PATH = join(__dirname, '..','..','..', '.github', 'workflows', 'deploy-main.yml');
+const ORA_APP_YAML_PATH = join(__dirname, '..','..', 'ora-app.yaml');
 
 export default () => {
   const loadYamlFile = (filePath: string) => {
