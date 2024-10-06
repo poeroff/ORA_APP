@@ -30,6 +30,9 @@ jobs:
                 - name: APIKEY
                   value: ${AI_APiKEY}
               ports: 8000
+              install: |
+                pip install --upgrade pip
+                pip install -r requirements.txt
               start: python3 manage.py runserver 0:8000
               buildenv: []
             context:
