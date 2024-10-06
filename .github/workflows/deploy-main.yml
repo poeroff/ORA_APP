@@ -26,15 +26,15 @@ jobs:
             options:
               env:
                 - name: DB_HOST
-                  value: youtube.cygahsyhplsd.ap-northeast-2.rds.amazonaws.com
+                  value: ora.c7yoak2m8npu.ap-northeast-2.rds.amazonaws.com
                 - name: DB_PORT
                   value: "3306"
                 - name: DB_USERNAME
                   value: admin
                 - name: DB_PASSWORD
-                  value: wqdsdsf123
+                  value: wqdsdsf123!
                 - name: DB_DATABASE
-                  value: ORA
+                  value: ora
               ports: "4000"
               install: npm ci
               build: npm run build
