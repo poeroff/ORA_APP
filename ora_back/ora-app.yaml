@@ -3,13 +3,13 @@ app: node@16
 options:
   env:
     - name: DB_HOST
-      value: ora.c7yoak2m8npu.ap-northeast-2.rds.amazonaws.com
+      value: ${DB_HOST}
     - name: DB_PORT
       value: "3306"
     - name: DB_USERNAME
       value: admin
     - name: DB_PASSWORD
-      value: wqdsdssf123!
+      value: wqdsdsf123!
     - name: DB_DATABASE
       value: ora
   ports: "4000"

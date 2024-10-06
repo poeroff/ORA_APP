@@ -20,29 +20,21 @@ jobs:
           token: ${{ secrets.CLOUDTYPE_TOKEN }}
           project: pascalora/ora_app
           stage: main
-          yaml: |
-            name: ora-app
-            app: node@16
+          yaml: >
+            name: ora-app-django
+
+            app: python@3.9
+
             options:
               env:
-                - name: DB_HOST
-                  value: ${DB_HOST}
-                - name: DB_PORT
-                  value: "3306"
-                - name: DB_USERNAME
-                  value: admin
-                - name: DB_PASSWORD
-                  value: wqdsdsf123!
-                - name: DB_DATABASE
-                  value: ora
-              ports: "4000"
-              install: npm ci
-              build: npm run build
-              start: npm run start:dev
+                - name: APIKEY
+                  value: ${APIKEY}
+              ports: 8000
+              start: python3 manage.py runserver 0:8000
               buildenv: []
             context:
               git:
                 url: git@github.com:poeroff/ORA_APP.git
                 ref: main
-                path: ora_back
-              preset: node
+                path : ora_python_back
+              preset: python-django
