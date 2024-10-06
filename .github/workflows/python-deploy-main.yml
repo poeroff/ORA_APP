@@ -30,11 +30,14 @@ jobs:
                 - name: APIKEY
                   value: ${AI_APiKEY}
               ports: 8000
-              start: python3 manage.py runserver 0:8000
+               start: |
+                cd ora_python_back
+                python manage.py runserver 0:8000
               buildenv: []
             context:
               git:
                 url: git@github.com:poeroff/ORA_APP.git
-                ref: main
                 path : ora_python_back
+                ref: main
+                
               preset: python-django
