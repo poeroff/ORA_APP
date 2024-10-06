@@ -22,22 +22,25 @@ jobs:
           stage: main
           yaml: >
             name: ora-app-django
-
             app: python@3.9
-
             options:
               env:
                 - name: APIKEY
                   value: ${AI_APiKEY}
+                - name: PYTHONPATH
+                  value: ora_python_back
               ports: 8000
-               start: |
+              install: |
+                pip install --upgrade pip
+                pip install -r requirements.txt
+            start: |
                 cd ora_python_back
-                python manage.py runserver 0:8000
+                python manage.py migrate
+                python manage.py runserver 0.0.0.0:8000
               buildenv: []
             context:
               git:
                 url: git@github.com:poeroff/ORA_APP.git
-                path : ora_python_back
+                path: ora_python_back
                 ref: main
-                
               preset: python-django
