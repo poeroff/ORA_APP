@@ -20,6 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Initialise environment variables
 env = environ.Env()
+AI_APiKEY = env('AI_APiKEY')
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 

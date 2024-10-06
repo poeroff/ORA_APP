@@ -40,7 +40,7 @@ async def get_data_from_db():
 
 
 # OpenAI API 키 설정
-openai.api_key = os.environ.get("APIKEY")
+openai.api_key = os.environ.get("AI_APiKEY")
 
 
 
