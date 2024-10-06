@@ -21,7 +21,7 @@ import { Type } from './company/entities/type.entity';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
+    ConfigModule.forRoot({ isGlobal: true,load: [configuration] }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule], useFactory: (configService: ConfigService) => ({
         type: 'mysql' as const ,
