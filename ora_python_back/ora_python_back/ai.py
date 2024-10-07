@@ -17,7 +17,7 @@ import environ
 
 logger = logging.getLogger(__name__)
 
-async def get_data_from_db():
+async def get_data_from_db(request):
     async with aiohttp.ClientSession() as session:
         try:
             async with session.get("http://localhost:4000/company") as response:
