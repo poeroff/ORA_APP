@@ -9,11 +9,11 @@ import { Repository } from 'typeorm';
 export class AuthService {
   constructor(@InjectRepository(User) private readonly userRepository : Repository<User>){}
   
-  async create(createAuthDto: CreateAuthDto) {
-    
-    
-    
+  async Kakaocreate(email: string, nickname: string) {
+    console.log(email,nickname);
+   
   }
+
 
   findAll() {
     return `This action returns all auth`;

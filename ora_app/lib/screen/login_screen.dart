@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
+import 'package:ora_app/api/kakao_login.dart';
 import 'package:ora_app/screen/home_screen.dart';
 import 'package:ora_app/screen/login/registration_screen.dart';
 import 'package:ora_app/screen/user_type_selection_screen.dart';
@@ -19,32 +20,57 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final KakaoLogin kakaoLogin = KakaoLogin();
   Future<void> _KaKaologinButton() async {
-    try {
-      late OAuthToken token;
-      if (await isKakaoTalkInstalled()) {
-        token = await UserApi.instance.loginWithKakaoTalk();
-        print('카카오톡으로 로그인 성공');
-      } else {
-        token = await UserApi.instance.loginWithKakaoAccount();
-        print('카카오계정으로 로그인 성공');
-      }
-
-      print('액세스 토큰: ${token.accessToken}');
-      print('리프레시 토큰: ${token.refreshToken}');
-
-      // 사용자 정보 가져오기
+    print(await KakaoSdk.origin);
+    if (await isKakaoTalkInstalled()) {
       try {
-        User user = await UserApi.instance.me();
-        print('사용자 정보 요청 성공'
-            '\n회원번호: ${user.id}'
-            '\n닉네임: ${user.kakaoAccount?.profile?.nickname}'
-            '\n이메일: ${user.kakaoAccount?.email}');
+        await UserApi.instance.loginWithKakaoTalk();
+        print('카카오톡으로 로그인 성공');
+        try {
+          User user = await UserApi.instance.me();
+          kakaoLogin.kakao(
+              user.kakaoAccount?.profile?.nickname, user.kakaoAccount?.email);
+        } catch (error) {
+          print('사용자 정보 요청 실패 $error');
+        }
       } catch (error) {
-        print('사용자 정보 요청 실패 $error');
+        print('카카오톡으로 로그인 실패 $error');
+
+        // 사용자가 카카오톡 설치 후 디바이스 권한 요청 화면에서 로그인을 취소한 경우,
+        // 의도적인 로그인 취소로 보고 카카오계정으로 로그인 시도 없이 로그인 취소로 처리 (예: 뒤로 가기)
+        if (error is PlatformException && error.code == 'CANCELED') {
+          return;
+        }
+        // 카카오톡에 연결된 카카오계정이 없는 경우, 카카오계정으로 로그인
+        try {
+          await UserApi.instance.loginWithKakaoAccount();
+          print('카카오계정으로 로그인 성공');
+          try {
+            User user = await UserApi.instance.me();
+            kakaoLogin.kakao(
+                user.kakaoAccount?.profile?.nickname, user.kakaoAccount?.email);
+          } catch (error) {
+            print('사용자 정보 요청 실패 $error');
+          }
+        } catch (error) {
+          print('카카오계정으로 로그인 실패 $error');
+        }
       }
-    } catch (error) {
-      print('카카오 로그인 실패 $error');
+    } else {
+      try {
+        await UserApi.instance.loginWithKakaoAccount();
+        print('카카오계정으로 로그인 성공');
+        try {
+          User user = await UserApi.instance.me();
+          kakaoLogin.kakao(
+              user.kakaoAccount?.profile?.nickname, user.kakaoAccount?.email);
+        } catch (error) {
+          print('사용자 정보 요청 실패 $error');
+        }
+      } catch (error) {
+        print('카카오계정으로 로그인 실패 $error');
+      }
     }
   }
 

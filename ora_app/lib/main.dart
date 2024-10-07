@@ -14,7 +14,9 @@ Future<void> main() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
 
-  KakaoSdk.init(nativeAppKey: dotenv.env["KAKAO_NATIVEAPPKEY"]);
+  KakaoSdk.init(
+      nativeAppKey: dotenv.env["KAKAO_NATIVEAPPKEY"],
+      javaScriptAppKey: dotenv.env["KAKAO_NATIVEAPPKEY"]);
 
   setPathUrlStrategy();
   runApp(MyApp(isLoggedIn: isLoggedIn));

@@ -23,22 +23,22 @@ export class User {
     @Column()
     nickname: string
 
-    @Column()
+    @Column({nullable : true})
     age: number
 
-    @Column()
+    @Column({nullable : true})
     gender: string
 
     @Column()
     email: string
 
-    @Column()
+    @Column({nullable : true})
     password: string
 
-    @Column()
-    address: string
+    // @Column()
+    // address: string
 
-    @Column()
+    @Column({nullable : true})
     phone_number: string
 
     @Column()

@@ -7,13 +7,17 @@ import { UpdateAuthDto } from './dto/update-auth.dto';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post()
-  create(@Body() createAuthDto: CreateAuthDto) {
-    return this.authService.create(createAuthDto);
+  @Post("Kakao")
+  kakaocreate(@Body() body: { email: string; nickname: string; }) {
+    
+    const { email, nickname } = body
+    console.log(email,nickname)
+    return this.authService.Kakaocreate(email, nickname);
   }
 
   @Get()
   findAll() {
+    console.log("HELLO");
     return this.authService.findAll();
   }
 
