@@ -17,10 +17,11 @@ import environ
 
 logger = logging.getLogger(__name__)
 
+node_backend_server = os.environ.get("NODE_BACKEND_SERVER")
 async def get_data_from_db(request):
     async with aiohttp.ClientSession() as session:
         try:
-            async with session.get("http://localhost:4000/company") as response:
+            async with session.get("{node_backend_server}/company") as response:
                 if response.status == 200:
                     logger.info("신호를 성공적으로 보냈습니다.")
                     response_text = await response.text()
