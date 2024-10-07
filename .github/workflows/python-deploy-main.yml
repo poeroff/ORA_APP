@@ -1,0 +1,46 @@
+name: Deploy to cloudtype
+on:
+  push:
+    branches:
+      - main
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Connect deploy key
+        uses: cloudtype-github-actions/connect@v1
+        with:
+          token: ${{ secrets.CLOUDTYPE_TOKEN }}
+          ghtoken: ${{ secrets.GHP_TOKEN }}
+      - name: Deploy
+        uses: cloudtype-github-actions/deploy@v1
+        with:
+          token: ${{ secrets.CLOUDTYPE_TOKEN }}
+          project: pascalora/ora_app
+          stage: main
+          yaml: >
+            name: ora-app-django
+
+            app: python@3.9
+
+            options:
+              env:
+                - name: APIKEY
+                  value: ${AI_APiKEY}
+                - name : NODE_BACKEND_SERVER
+                  value : https://port-0-ora-app-m1xq0ou447d4b62a.sel4.cloudtype.app
+              ports: 8000
+              install: |
+                pip install --upgrade pip && pip install -r requirements.txt
+               
+              start: python3 manage.py runserver 0:8000
+              buildenv: []
+            context:
+              git:
+                url: git@github.com:poeroff/ORA_APP.git
+                path : ora_python_back
+                ref: main
+                
+              preset: python-django
