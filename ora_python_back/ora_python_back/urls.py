@@ -22,5 +22,5 @@ from ora_python_back import ai
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("get_data_from_db", ai.get_data_from_db),
-    path("start_conversation", ai.start_conversation),  
+    path("start_conversation", ai.start_conversation)
 ]
