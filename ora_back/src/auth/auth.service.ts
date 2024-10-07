@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -10,8 +10,18 @@ export class AuthService {
   constructor(@InjectRepository(User) private readonly userRepository : Repository<User>){}
   
   async Kakaocreate(email: string, nickname: string) {
-    console.log(email,nickname);
-   
+    try{
+      const DUPLICATE_EMAIL = await this.userRepository.findOne({where : {email}});
+      if(DUPLICATE_EMAIL){
+        return { status: 200, message: '이미 존재하는 이메일입니다.'}
+      }
+      const createuser = await this.userRepository.create({email : email , nickname : nickname});
+      await this.userRepository.save(createuser);
+      return { status: 200, message: '계정 생성 완료'}
+    }
+    catch (error) {
+      throw new HttpException('사용자 생성 중 오류가 발생했습니다.', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
 

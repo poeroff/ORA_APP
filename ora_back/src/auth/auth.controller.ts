@@ -9,9 +9,7 @@ export class AuthController {
 
   @Post("Kakao")
   kakaocreate(@Body() body: { email: string; nickname: string; }) {
-    
     const { email, nickname } = body
-    console.log(email,nickname)
     return this.authService.Kakaocreate(email, nickname);
   }
 
