@@ -215,7 +215,7 @@ async def chat_with_oracle(store_data,user_input,address):
 @csrf_exempt
 
 async def start_conversation(request):
-    print("안녕하세요 저의 이름은")
+   
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
@@ -223,17 +223,17 @@ async def start_conversation(request):
             address = data.get('address')
             print(user_input,address)
             
-            # if user_input is None:
-            #     return JsonResponse({'error': 'Missing message parameter'}, status=400)
+            if user_input is None:
+                return JsonResponse({'error': 'Missing message parameter'}, status=400)
             
-            # store_data = await get_data_from_db()
-            # if store_data is None:
-            #     return JsonResponse({'error': 'Failed to fetch store data'}, status=500)
+            store_data = await get_data_from_db()
+            if store_data is None:
+                return JsonResponse({'error': 'Failed to fetch store data'}, status=500)
                 
-            # response = await chat_with_oracle(store_data, user_input, address)
+            response = await chat_with_oracle(store_data, user_input, address)
             
-            # # JsonResponse 객체를 직접 반환
-            # return JsonResponse({'message': response})
+            # JsonResponse 객체를 직접 반환
+            return HttpResponse("Hello World")
             
         except json.JSONDecodeError:
             return JsonResponse({'error': 'Invalid JSON'}, status=400)
