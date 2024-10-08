@@ -19,6 +19,7 @@ logger = logging.getLogger(__name__)
 
 node_backend_server = os.environ.get("NODE_BACKEND_SERVER")
 async def get_data_from_db():
+    node_backend_server = os.environ.get("NODE_BACKEND_SERVER")
     print(node_backend_server)
     async with aiohttp.ClientSession() as session:
         try:
@@ -31,14 +32,10 @@ async def get_data_from_db():
                     return response_json
                 else:
                     logger.error(f"오류 발생: 상태 코드 {response.status}")
-                    return HttpResponse(f"오류 발생: 상태 코드 {response.status}", status=response.status)
-        except aiohttp.ClientError as e:
+                    return None
+        except Exception as e:
             logger.error(f"요청 중 오류 발생: {e}")
-            return HttpResponse(f"요청 중 오류 발생: {e}", status=500)
-        except ValueError as e:
-            logger.error(f"JSON 파싱 오류: {e}")
-            return HttpResponse(f"JSON 파싱 오류: {e}", status=500)
- 
+            return None
 
 
 # OpenAI API 키 설정
@@ -208,19 +205,13 @@ async def handle_conversation(conversation, user_input, store_data):
 # 대화
 async def chat_with_oracle(store_data,user_input,address):
     conversation = initialize_conversation()
-    print("안녕하세요, '안녕오라'라고 입력하여 대화를 시작하세요.")
-    while True:
-        if user_input.lower() == "안녕오라":
-            greeting = "안녕하세요! 무엇을 도와드릴까요?"
-            # print(f"오라: {greeting}")
-            conversation.append({"role": "assistant", "content": greeting})
-            return greeting 
-        else:
-            # OpenAI API를 통해 유동적인 응답 생성
-            response = await handle_conversation(conversation, user_input, store_data)
-            # print(f"오라: {response}")
-            
-            return response  
+    if user_input.lower() == "안녕오라":
+        greeting = "안녕하세요! 무엇을 도와드릴까요?"
+        conversation.append({"role": "assistant", "content": greeting})
+        return greeting
+    else:
+        response = await handle_conversation(conversation, user_input, store_data)
+        return response
 @csrf_exempt
 async def start_conversation(request):
     if request.method == 'POST':
@@ -228,18 +219,23 @@ async def start_conversation(request):
             data = json.loads(request.body)
             user_input = data.get('message')
             address = data.get('address')
-            print(address)
             
             if user_input is None:
                 return JsonResponse({'error': 'Missing message parameter'}, status=400)
             
-            # 비동기 함수 호출 시 await 사용
             store_data = await get_data_from_db()
+            if store_data is None:
+                return JsonResponse({'error': 'Failed to fetch store data'}, status=500)
+                
             response = await chat_with_oracle(store_data, user_input, address)
             
+            # JsonResponse 객체를 직접 반환
             return JsonResponse({'message': response})
             
         except json.JSONDecodeError:
             return JsonResponse({'error': 'Invalid JSON'}, status=400)
+        except Exception as e:
+            logger.error(f"Error in start_conversation: {e}")
+            return JsonResponse({'error': str(e)}, status=500)
     else:
         return JsonResponse({'error': 'Only POST requests are allowed'}, status=405)
