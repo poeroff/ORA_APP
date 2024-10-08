@@ -215,6 +215,7 @@ async def chat_with_oracle(store_data,user_input,address):
 @csrf_exempt
 
 async def start_conversation(request):
+    print("안녕하세요 저의 이름은")
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
