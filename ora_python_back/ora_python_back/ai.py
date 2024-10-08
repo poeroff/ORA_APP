@@ -241,5 +241,5 @@ async def start_conversation(request):
     else:
         return JsonResponse({'error': 'Only POST requests are allowed'}, status=405)
     
-def HELLO_WORLD():
+def hello_world(request):
      return HttpResponse("Hello World")
