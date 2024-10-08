@@ -6,7 +6,7 @@ import logging
 import aiohttp # type: ignore
 import openai  # openai 버전 0.28.0 , pip install openai==0.28.0
 import json
-from asgiref.sync import sync_to_async
+from asgiref.sync import async_to_sync
 from django.views.decorators.csrf import csrf_exempt
 import environ
 
@@ -213,8 +213,8 @@ async def chat_with_oracle(store_data,user_input,address):
         response = await handle_conversation(conversation, user_input, store_data)
         return response
 @csrf_exempt
-
-def start_conversation(request):
+@async_to_sync
+async def start_conversation(request):
     return HttpResponse("Hello World")
     # if request.method == 'POST':
     #     try:
