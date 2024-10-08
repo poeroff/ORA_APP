@@ -222,8 +222,8 @@ async def chat_with_oracle(store_data,user_input,address):
             
             return response  
 @csrf_exempt
-@sync_to_async
-def start_conversation(request):
+
+async def start_conversation(request):
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
@@ -232,8 +232,8 @@ def start_conversation(request):
             print(address)
             if user_input is None:
                 return JsonResponse({'error': 'Missing message parameter'}, status=400)
-            store_data = get_data_from_db()
-            response = chat_with_oracle(store_data, user_input, address)
+            store_data = await get_data_from_db()
+            response = await chat_with_oracle(store_data, user_input, address)
             return JsonResponse({'message': response})
         except json.JSONDecodeError:
             return JsonResponse({'error': 'Invalid JSON'}, status=400)
