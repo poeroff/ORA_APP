@@ -222,7 +222,6 @@ async def chat_with_oracle(store_data,user_input,address):
             
             return response  
 @csrf_exempt
-
 async def start_conversation(request):
     if request.method == 'POST':
         try:
