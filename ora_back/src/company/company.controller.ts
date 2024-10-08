@@ -13,9 +13,8 @@ export class CompanyController {
   }
 
   @Get()
-  findall_company() {
-    console.log("HELLO")
-    return this.companyService.findall_company();
+  async findall_company() {
+    return await this.companyService.findall_company();
   }
 
   @Get(':id')
