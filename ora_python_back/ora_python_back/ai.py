@@ -18,7 +18,8 @@ import environ
 logger = logging.getLogger(__name__)
 
 node_backend_server = os.environ.get("NODE_BACKEND_SERVER")
-async def get_data_from_db(request):
+async def get_data_from_db():
+    print(node_backend_server)
     async with aiohttp.ClientSession() as session:
         try:
             async with session.get(f"{node_backend_server}/company") as response:

@@ -41,6 +41,7 @@ export class CompanyService {
     };
     
     const processedCompany = removeNullValues(company);
+   
 
     return processedCompany;
   }

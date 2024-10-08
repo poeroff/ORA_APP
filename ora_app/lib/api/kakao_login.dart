@@ -7,9 +7,6 @@ class KakaoLogin {
   Uri uri = Uri.parse(apiUri);
 
   Future<bool> kakao(email, nickname) async {
-    print(email);
-    print(nickname);
-    print(uri);
     try {
       final response = await http.post(
         uri,

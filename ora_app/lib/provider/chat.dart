@@ -9,13 +9,15 @@ class ChatApi {
   Uri uri = Uri.parse(apiUri);
 
   Future<String> getmessage(userInput, currentAddress) async {
+    print(userInput);
+    print(currentAddress);
     final response = await http.post(uri,
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({"message": userInput, "address": currentAddress}));
     if (response.statusCode == 200) {
       // JSON 응답을 파싱
       Map<String, dynamic> data = jsonDecode(response.body);
-      // 'message' 키의 값을 반환
+      // 'message' 키의 값을
       print(data['message']);
       return data['message'];
     } else {

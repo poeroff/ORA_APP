@@ -24,9 +24,9 @@ class _ChatScreenState extends State<ChatScreen> {
   final Locationservice _locationservice = Locationservice();
   final GetAddress _address = GetAddress();
   String currentAddress = '';
-  SpeechToText _speechToText = SpeechToText();
-  bool _speechEnabled = false;
-  String _lastWords = '';
+  // SpeechToText _speechToText = SpeechToText();
+  // bool _speechEnabled = false;
+  // String _lastWords = '';
 
   List<Chat> chat = [];
   final ChatApi _chatapi = ChatApi();
@@ -39,29 +39,29 @@ class _ChatScreenState extends State<ChatScreen> {
     super.initState();
     _initializeLocation();
     WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
-    _initSpeech();
+    // _initSpeech();
   }
 
-  void _initSpeech() async {
-    _speechEnabled = await _speechToText.initialize();
-    setState(() {});
-  }
+  // void _initSpeech() async {
+  //   _speechEnabled = await _speechToText.initialize();
+  //   setState(() {});
+  // }
 
-  void _startListening() async {
-    await _speechToText.listen(onResult: _onSpeechResult);
-    setState(() {});
-  }
+  // void _startListening() async {
+  //   await _speechToText.listen(onResult: _onSpeechResult);
+  //   setState(() {});
+  // }
 
-  void _stopListening() async {
-    await _speechToText.stop();
-    setState(() {});
-  }
+  // void _stopListening() async {
+  //   await _speechToText.stop();
+  //   setState(() {});
+  // }
 
-  void _onSpeechResult(SpeechRecognitionResult result) {
-    setState(() {
-      _lastWords = result.recognizedWords;
-    });
-  }
+  // void _onSpeechResult(SpeechRecognitionResult result) {
+  //   setState(() {
+  //     _lastWords = result.recognizedWords;
+  //   });
+  // }
 
   Future<void> _initializeLocation() async {
     Position position = await _locationservice.getLocation();
@@ -149,23 +149,24 @@ class _ChatScreenState extends State<ChatScreen> {
                 //           ? 'Tap the microphone to start listening...'
                 //           : 'Speech not available',
                 // ),
-                Container(
-                  decoration: const BoxDecoration(
-                    color:
-                        Color(0xff4255F8), // Set the background color to purple
-                    shape: BoxShape.circle,
-                  ),
-                  child: IconButton(
-                    icon: Icon(
-                        _speechToText.isNotListening
-                            ? Icons.mic_off
-                            : Icons.mic,
-                        color: Colors.white), // Set the icon color to white
-                    onPressed: _speechToText.isNotListening
-                        ? _startListening
-                        : _stopListening,
-                  ),
-                ),
+                // Container(
+                //   decoration: const BoxDecoration(
+                //     color:
+                //         Color(0xff4255F8), // Set the background color to purple
+                //     shape: BoxShape.circle,
+                //   ),
+                //   child:
+                //   IconButton(
+                //     icon: Icon(
+                //         _speechToText.isNotListening
+                //             ? Icons.mic_off
+                //             : Icons.mic,
+                //         color: Colors.white), // Set the icon color to white
+                //     onPressed: _speechToText.isNotListening
+                //         ? _startListening
+                //         : _stopListening,
+                //   ),
+                // ),
                 const SizedBox(width: 8),
                 Expanded(
                   child: _buildInputField(
