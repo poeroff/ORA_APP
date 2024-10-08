@@ -17,7 +17,7 @@ import environ
 
 logger = logging.getLogger(__name__)
 
-node_backend_server = os.environ.get("NODE_BACKEND_SERVER")
+
 async def get_data_from_db():
     node_backend_server = os.environ.get("NODE_BACKEND_SERVER")
     print(node_backend_server)
