@@ -17,7 +17,7 @@ import environ
 
 logger = logging.getLogger(__name__)
 
-
+@async_to_sync
 async def get_data_from_db():
     node_backend_server = os.environ.get("NODE_BACKEND_SERVER")
     print(node_backend_server)
@@ -102,6 +102,7 @@ def find_relevant_store(user_input, store_data):
     return None
 
 # OpenAI API를 통해 대화의 의도를 파악하고 유동적 응답 생성
+@async_to_sync
 async def analyze_user_intent(conversation, user_input):
     conversation.append({"role": "user", "content": user_input})
 
@@ -128,6 +129,7 @@ async def analyze_user_intent(conversation, user_input):
             return response_text
 
 # 가게 정보를 바탕으로 유동적인 응답 생성 (매번 새로운 응답 생성)
+@async_to_sync
 async def fetch_store_info(conversation, store, user_input):
     # 가게의 위치, 분위기, 메뉴 등 정보 기반으로 답변 생성
     menu_items = ', '.join([f"{item['item']} ({item['price']})" for item in store['shop_menu']])
@@ -181,6 +183,7 @@ async def fetch_store_info(conversation, store, user_input):
             return response_json["choices"][0]["message"]["content"]
 
 # 대화 상태 관리 함수
+@async_to_sync
 async def handle_conversation(conversation, user_input, store_data):
     global chat_state
 
@@ -215,7 +218,7 @@ async def chat_with_oracle(store_data,user_input,address):
 @csrf_exempt
 @async_to_sync
 async def start_conversation(request):
-   
+    print("HELLO")
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
