@@ -6,7 +6,7 @@ import logging
 import aiohttp # type: ignore
 import openai  # openai 버전 0.28.0 , pip install openai==0.28.0
 import json
-import asyncio
+from asgiref.sync import sync_to_async
 from django.views.decorators.csrf import csrf_exempt
 import environ
 
@@ -221,8 +221,9 @@ async def chat_with_oracle(store_data,user_input,address):
             # print(f"오라: {response}")
             
             return response  
-@csrf_exempt 
-async def start_conversation(request):
+@csrf_exempt
+@sync_to_async
+def start_conversation(request):
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
@@ -231,8 +232,8 @@ async def start_conversation(request):
             print(address)
             if user_input is None:
                 return JsonResponse({'error': 'Missing message parameter'}, status=400)
-            store_data = await get_data_from_db()
-            response = await chat_with_oracle(store_data, user_input,address)
+            store_data = get_data_from_db()
+            response = chat_with_oracle(store_data, user_input, address)
             return JsonResponse({'message': response})
         except json.JSONDecodeError:
             return JsonResponse({'error': 'Invalid JSON'}, status=400)
