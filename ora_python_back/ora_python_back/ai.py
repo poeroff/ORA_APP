@@ -240,3 +240,6 @@ async def start_conversation(request):
             return JsonResponse({'error': str(e)}, status=500)
     else:
         return JsonResponse({'error': 'Only POST requests are allowed'}, status=405)
+    
+def HELLO_WORLD():
+     return HttpResponse("Hello World")
