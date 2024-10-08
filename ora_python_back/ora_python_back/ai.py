@@ -229,11 +229,16 @@ async def start_conversation(request):
             user_input = data.get('message')
             address = data.get('address')
             print(address)
+            
             if user_input is None:
                 return JsonResponse({'error': 'Missing message parameter'}, status=400)
+            
+            # 비동기 함수 호출 시 await 사용
             store_data = await get_data_from_db()
             response = await chat_with_oracle(store_data, user_input, address)
+            
             return JsonResponse({'message': response})
+            
         except json.JSONDecodeError:
             return JsonResponse({'error': 'Invalid JSON'}, status=400)
     else:
