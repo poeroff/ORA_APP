@@ -18,10 +18,11 @@ from django.contrib import admin
 from django.urls import path
 from django.views.decorators.http import require_http_methods
 from ora_python_back import ai
+from asgiref.sync import async_to_sync
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("get_data_from_db", ai.get_data_from_db),
-    path("start_conversation", ai.start_conversation)
+    path('start_conversation/', async_to_sync(ai.start_conversation), name='start_conversation'),
 ]
