@@ -105,7 +105,7 @@ def find_relevant_store(user_input, store_data):
 
 async def analyze_user_intent(conversation, user_input):
     conversation.append({"role": "user", "content": user_input})
-    openai.api_key = os.environ.get("AI_APiKEY")
+    openai.api_key = os.environ.get("AI_APIKEY")
     print(openai.api_key)
 
     async with aiohttp.ClientSession() as session:
