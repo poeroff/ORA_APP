@@ -11,6 +11,7 @@ class ChatApi {
   Future<String> getmessage(userInput, currentAddress) async {
     print(userInput);
     print(currentAddress);
+    print(uri);
     final response = await http.post(uri,
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({"message": userInput, "address": currentAddress}));

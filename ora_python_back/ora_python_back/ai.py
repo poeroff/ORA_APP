@@ -16,10 +16,10 @@ import environ
 
 
 logger = logging.getLogger(__name__)
+node_backend_server = os.environ.get("NODE_BACKEND_SERVER")
 
-@async_to_sync
 async def get_data_from_db():
-    node_backend_server = os.environ.get("NODE_BACKEND_SERVER")
+
     print(node_backend_server)
     async with aiohttp.ClientSession() as session:
         try:
@@ -39,7 +39,7 @@ async def get_data_from_db():
 
 
 # OpenAI API 키 설정
-openai.api_key = os.environ.get("AI_APiKEY")
+
 
 
 
@@ -102,9 +102,10 @@ def find_relevant_store(user_input, store_data):
     return None
 
 # OpenAI API를 통해 대화의 의도를 파악하고 유동적 응답 생성
-@async_to_sync
+
 async def analyze_user_intent(conversation, user_input):
     conversation.append({"role": "user", "content": user_input})
+    openai.api_key = os.environ.get("AI_APiKEY")
 
     async with aiohttp.ClientSession() as session:
         async with session.post(
@@ -129,7 +130,7 @@ async def analyze_user_intent(conversation, user_input):
             return response_text
 
 # 가게 정보를 바탕으로 유동적인 응답 생성 (매번 새로운 응답 생성)
-@async_to_sync
+
 async def fetch_store_info(conversation, store, user_input):
     # 가게의 위치, 분위기, 메뉴 등 정보 기반으로 답변 생성
     menu_items = ', '.join([f"{item['item']} ({item['price']})" for item in store['shop_menu']])
@@ -183,7 +184,7 @@ async def fetch_store_info(conversation, store, user_input):
             return response_json["choices"][0]["message"]["content"]
 
 # 대화 상태 관리 함수
-@async_to_sync
+
 async def handle_conversation(conversation, user_input, store_data):
     global chat_state
 
@@ -223,17 +224,19 @@ async def start_conversation(request):
             data = json.loads(request.body)
             user_input = data.get('message')
             address = data.get('address')
+            address = "강원도 춘천시 효자동"
             print(user_input,address)
             
             if user_input is None:
                 return JsonResponse({'error': 'Missing message parameter'}, status=400)
             
             store_data = await get_data_from_db()
+            print(store_data)
             if store_data is None:
                 return JsonResponse({'error': 'Failed to fetch store data'}, status=500)
                 
             response = await chat_with_oracle(store_data, user_input, address)
-            
+
             # JsonResponse 객체를 직접 반환
             return JsonResponse({'message': response})
             
