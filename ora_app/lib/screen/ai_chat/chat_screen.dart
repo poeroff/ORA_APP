@@ -43,13 +43,8 @@ class _ChatScreenState extends State<ChatScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
     initSpeech();
     _speechToText.statusListener = (status) async {
-      print("음성 인식 상태: $status");
       if (status == SpeechToText.listeningStatus) {
-        print("음성 인식 시작");
       } else if (status == SpeechToText.notListeningStatus) {
-        print("음성 인식 종료");
-        print(_wordsSpoken);
-        print(currentAddress);
         setState(() {
           chat.add(Chat(message: _wordsSpoken));
           _chatStreamController.add(chat);
@@ -60,7 +55,9 @@ class _ChatScreenState extends State<ChatScreen> {
           chat.add(Chat(message: aiResponse));
           _chatStreamController.add(chat);
         });
-        _scrollToBottom();
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _scrollToBottom();
+        });
       }
     };
   }
@@ -115,7 +112,9 @@ class _ChatScreenState extends State<ChatScreen> {
       chat.add(Chat(message: aiResponse));
       _chatStreamController.add(chat);
     });
-    _scrollToBottom();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _scrollToBottom();
+    });
   }
 
   @override
