@@ -218,7 +218,6 @@ async def chat_with_oracle(store_data,user_input,address):
 @csrf_exempt
 @async_to_sync
 async def start_conversation(request):
-    print("HELLO")
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
