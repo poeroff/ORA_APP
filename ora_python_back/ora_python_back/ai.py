@@ -225,7 +225,7 @@ async def start_conversation(request):
             data = json.loads(request.body)
             user_input = data.get('message')
             address = data.get('address')
-            address = "강원도 춘천시 효자동"
+       
             print(user_input,address)
             
             if user_input is None:

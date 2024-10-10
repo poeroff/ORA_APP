@@ -9,13 +9,13 @@ import { Repository } from 'typeorm';
 export class AuthService {
   constructor(@InjectRepository(User) private readonly userRepository : Repository<User>){}
   
-  async Kakaocreate(email: string, nickname: string) {
+  async Kakaocreate(email: string, nickname: string,authority:string) {
     try{
       const DUPLICATE_EMAIL = await this.userRepository.findOne({where : {email}});
       if(DUPLICATE_EMAIL){
         return { status: 200, message: '이미 존재하는 이메일입니다.'}
       }
-      const createuser = await this.userRepository.create({email : email , nickname : nickname});
+      const createuser = await this.userRepository.create({email : email , nickname : nickname,authority:authority,join_path :"카카오"});
       await this.userRepository.save(createuser);
       return { status: 200, message: '계정 생성 완료'}
     }

@@ -6,7 +6,7 @@ class KakaoLogin {
   static String apiUri = "${dotenv.env["NODE_BACKEND_ADDRESS"]}/auth/Kakao";
   Uri uri = Uri.parse(apiUri);
 
-  Future<bool> kakao(email, nickname) async {
+  Future<bool> kakao(email, nickname,authority) async {
     try {
       final response = await http.post(
         uri,
@@ -16,6 +16,7 @@ class KakaoLogin {
         body: jsonEncode(<String, String>{
           'email': email,
           'nickname': nickname,
+          'authority' : authority
         }),
       );
       print(response);

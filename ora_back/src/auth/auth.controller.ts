@@ -8,9 +8,9 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post("Kakao")
-  kakaocreate(@Body() body: { email: string; nickname: string; }) {
-    const { email, nickname } = body
-    return this.authService.Kakaocreate(email, nickname);
+  kakaocreate(@Body() body: { email: string; nickname: string; authority:string; }) {
+    const { email, nickname,authority } = body
+    return this.authService.Kakaocreate(email, nickname,authority);
   }
 
   @Get()

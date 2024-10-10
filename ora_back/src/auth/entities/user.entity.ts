@@ -38,6 +38,9 @@ export class User {
     // @Column()
     // address: string
 
+    @Column()
+    join_path : string
+
     @Column({nullable : true})
     phone_number: string
 
