@@ -20,11 +20,6 @@ nltk.download('punkt')
 nltk.download('stopwords')
 
 
-
-
-
-
-
 logger = logging.getLogger(__name__)
 node_backend_server = os.environ.get("NODE_BACKEND_SERVER")
 
@@ -248,10 +243,10 @@ async def start_conversation(request):
                 
             response = await chat_with_oracle(store_data, user_input, address)
             text = extract_keywords(response);
-            print(text)
+            
            
 
-            return JsonResponse({'message': response})
+            return JsonResponse({'message': response, "NLP" : text})
             
         except json.JSONDecodeError:
             return JsonResponse({'error': 'Invalid JSON'}, status=400)
@@ -284,11 +279,9 @@ def ensure_nltk_data():
 def extract_keywords(AI_TEXT,top_n=5):
     ensure_nltk_data()
     okt = Okt()
-
     try:
         # 텍스트 전처리
         stop_words = set(['을', '를', '이', '가', '은', '는', '에', '의', '와', '과', '으로', '로', '에서'])
-    
         # 형태소 분석 및 명사 추출
         nouns = okt.nouns(AI_TEXT)
         
@@ -310,7 +303,6 @@ def extract_keywords(AI_TEXT,top_n=5):
         word_scores = list(zip(feature_names, tfidf_scores))
         word_scores.sort(key=lambda x: x[1], reverse=True)
         top_words = word_scores[:top_n]
-    
         return [word for word, score in top_words]
 
 
