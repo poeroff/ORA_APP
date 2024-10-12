@@ -9,6 +9,16 @@ import json
 from asgiref.sync import async_to_sync
 from django.views.decorators.csrf import csrf_exempt
 import environ
+from nltk.tokenize import word_tokenize
+from nltk.corpus import stopwords
+from nltk.stem import PorterStemmer
+from sklearn.feature_extraction.text import TfidfVectorizer
+import nltk
+from konlpy.tag import Okt
+from sklearn.feature_extraction.text import TfidfVectorizer
+nltk.download('punkt')
+nltk.download('stopwords')
+
 
 
 
@@ -20,7 +30,7 @@ node_backend_server = os.environ.get("NODE_BACKEND_SERVER")
 
 async def get_data_from_db():
 
-    print(node_backend_server)
+
     async with aiohttp.ClientSession() as session:
         try:
             async with session.get(f"{node_backend_server}/company") as response:
@@ -106,7 +116,7 @@ def find_relevant_store(user_input, store_data):
 async def analyze_user_intent(conversation, user_input):
     conversation.append({"role": "user", "content": user_input})
     openai.api_key = os.environ.get("AI_APIKEY")
-    print(openai.api_key)
+ 
 
     async with aiohttp.ClientSession() as session:
         async with session.post(
@@ -226,19 +236,21 @@ async def start_conversation(request):
             user_input = data.get('message')
             address = data.get('address')
        
-            print(user_input,address)
+          
             
             if user_input is None:
                 return JsonResponse({'error': 'Missing message parameter'}, status=400)
             
             store_data = await get_data_from_db()
-            print(store_data)
+          
             if store_data is None:
                 return JsonResponse({'error': 'Failed to fetch store data'}, status=500)
                 
             response = await chat_with_oracle(store_data, user_input, address)
+            text = extract_keywords(response);
+            print(text)
+           
 
-            # JsonResponse 객체를 직접 반환
             return JsonResponse({'message': response})
             
         except json.JSONDecodeError:
@@ -249,5 +261,66 @@ async def start_conversation(request):
     else:
         return JsonResponse({'error': 'Only POST requests are allowed'}, status=405)
     
+def ensure_nltk_data():
+    nltk_data_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'nltk_data')
+    os.makedirs(nltk_data_path, exist_ok=True)
+    nltk.data.path.append(nltk_data_path)
+
+    resources = ['punkt', 'stopwords', 'averaged_perceptron_tagger']
+    for resource in resources:
+        try:
+            nltk.data.find(f'tokenizers/{resource}')
+        except LookupError:
+            print(f"Downloading {resource}...")
+            nltk.download(resource, download_dir=nltk_data_path, quiet=True)
+    
+    # 명시적으로 punkt_tab 다운로드
+    try:
+        nltk.data.find('tokenizers/punkt_tab')
+    except LookupError:
+        print("Downloading punkt_tab...")
+        nltk.download('punkt_tab', download_dir=nltk_data_path, quiet=True)
+
+def extract_keywords(AI_TEXT,top_n=5):
+    ensure_nltk_data()
+    okt = Okt()
+
+    try:
+        # 텍스트 전처리
+        stop_words = set(['을', '를', '이', '가', '은', '는', '에', '의', '와', '과', '으로', '로', '에서'])
+    
+        # 형태소 분석 및 명사 추출
+        nouns = okt.nouns(AI_TEXT)
+        
+        # 불용어 제거 및 2글자 이상의 명사만 선택
+        filtered_nouns = [noun for noun in nouns if noun not in stop_words and len(noun) > 1]
+        
+        # 명사 리스트를 문자열로 변환
+        preprocessed_text = ' '.join(filtered_nouns)
+        
+        # TF-IDF 벡터화
+        vectorizer = TfidfVectorizer()
+        tfidf_matrix = vectorizer.fit_transform([preprocessed_text])
+        
+        # 단어와 그에 해당하는 TF-IDF 점수를 추출
+        feature_names = vectorizer.get_feature_names_out()
+        tfidf_scores = tfidf_matrix.toarray()[0]
+        
+        # TF-IDF 점수가 높은 순으로 정렬하여 상위 n개 추출
+        word_scores = list(zip(feature_names, tfidf_scores))
+        word_scores.sort(key=lambda x: x[1], reverse=True)
+        top_words = word_scores[:top_n]
+    
+        return [word for word, score in top_words]
+
+
+    except Exception as e:
+        print(f"키워드 추출 중 오류 발생: {str(e)}")
+        return []
+
+    
+    
 def hello_world(request):
      return HttpResponse("Hello World")
+
+
