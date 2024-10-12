@@ -14,6 +14,8 @@ import nltk
 from konlpy.tag import Okt
 from sklearn.feature_extraction.text import TfidfVectorizer
 nltk.download('punkt')
+
+nltk.data.path.append("/app/ora_python_back/nltk_data")
 nltk.download('stopwords')
 
 
