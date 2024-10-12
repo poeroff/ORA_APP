@@ -9,9 +9,6 @@ import json
 from asgiref.sync import async_to_sync
 from django.views.decorators.csrf import csrf_exempt
 import environ
-from nltk.tokenize import word_tokenize
-from nltk.corpus import stopwords
-from nltk.stem import PorterStemmer
 from sklearn.feature_extraction.text import TfidfVectorizer
 import nltk
 from konlpy.tag import Okt
