@@ -6,19 +6,26 @@ import logging
 import aiohttp # type: ignore
 import openai  # openai 버전 0.28.0 , pip install openai==0.28.0
 import json
-import asyncio
+from asgiref.sync import async_to_sync
 from django.views.decorators.csrf import csrf_exempt
 import environ
+from sklearn.feature_extraction.text import TfidfVectorizer
+import nltk
+from konlpy.tag import Okt
+from sklearn.feature_extraction.text import TfidfVectorizer
+nltk.download('punkt')
 
-
-
-
+nltk.data.path.append("/app/ora_python_back/nltk_data")
+nltk.download('averaged_perceptron_tagger') 
+nltk.download('stopwords')
 
 
 logger = logging.getLogger(__name__)
-
 node_backend_server = os.environ.get("NODE_BACKEND_SERVER")
-async def get_data_from_db(request):
+
+async def get_data_from_db():
+
+
     async with aiohttp.ClientSession() as session:
         try:
             async with session.get(f"{node_backend_server}/company") as response:
@@ -30,18 +37,14 @@ async def get_data_from_db(request):
                     return response_json
                 else:
                     logger.error(f"오류 발생: 상태 코드 {response.status}")
-                    return HttpResponse(f"오류 발생: 상태 코드 {response.status}", status=response.status)
-        except aiohttp.ClientError as e:
+                    return None
+        except Exception as e:
             logger.error(f"요청 중 오류 발생: {e}")
-            return HttpResponse(f"요청 중 오류 발생: {e}", status=500)
-        except ValueError as e:
-            logger.error(f"JSON 파싱 오류: {e}")
-            return HttpResponse(f"JSON 파싱 오류: {e}", status=500)
- 
+            return None
 
 
 # OpenAI API 키 설정
-openai.api_key = os.environ.get("AI_APiKEY")
+
 
 
 
@@ -104,8 +107,11 @@ def find_relevant_store(user_input, store_data):
     return None
 
 # OpenAI API를 통해 대화의 의도를 파악하고 유동적 응답 생성
+
 async def analyze_user_intent(conversation, user_input):
     conversation.append({"role": "user", "content": user_input})
+    openai.api_key = os.environ.get("AI_APIKEY")
+ 
 
     async with aiohttp.ClientSession() as session:
         async with session.post(
@@ -130,6 +136,7 @@ async def analyze_user_intent(conversation, user_input):
             return response_text
 
 # 가게 정보를 바탕으로 유동적인 응답 생성 (매번 새로운 응답 생성)
+
 async def fetch_store_info(conversation, store, user_input):
     # 가게의 위치, 분위기, 메뉴 등 정보 기반으로 답변 생성
     menu_items = ', '.join([f"{item['item']} ({item['price']})" for item in store['shop_menu']])
@@ -183,6 +190,7 @@ async def fetch_store_info(conversation, store, user_input):
             return response_json["choices"][0]["message"]["content"]
 
 # 대화 상태 관리 함수
+
 async def handle_conversation(conversation, user_input, store_data):
     global chat_state
 
@@ -207,33 +215,104 @@ async def handle_conversation(conversation, user_input, store_data):
 # 대화
 async def chat_with_oracle(store_data,user_input,address):
     conversation = initialize_conversation()
-    print("안녕하세요, '안녕오라'라고 입력하여 대화를 시작하세요.")
-    while True:
-        if user_input.lower() == "안녕오라":
-            greeting = "안녕하세요! 무엇을 도와드릴까요?"
-            # print(f"오라: {greeting}")
-            conversation.append({"role": "assistant", "content": greeting})
-            return greeting 
-        else:
-            # OpenAI API를 통해 유동적인 응답 생성
-            response = await handle_conversation(conversation, user_input, store_data)
-            # print(f"오라: {response}")
-            
-            return response  
-@csrf_exempt 
+    if user_input.lower() == "안녕오라":
+        greeting = "안녕하세요! 무엇을 도와드릴까요?"
+        conversation.append({"role": "assistant", "content": greeting})
+        return greeting
+    else:
+        response = await handle_conversation(conversation, user_input, store_data)
+        return response
+@csrf_exempt
+@async_to_sync
 async def start_conversation(request):
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
             user_input = data.get('message')
             address = data.get('address')
-            print(address)
+       
+          
+            
             if user_input is None:
                 return JsonResponse({'error': 'Missing message parameter'}, status=400)
+            
             store_data = await get_data_from_db()
-            response = await chat_with_oracle(store_data, user_input,address)
-            return JsonResponse({'message': response})
+          
+            if store_data is None:
+                return JsonResponse({'error': 'Failed to fetch store data'}, status=500)
+                
+            response = await chat_with_oracle(store_data, user_input, address)
+            text = extract_keywords(response);
+            
+           
+
+            return JsonResponse({'message': response, "NLP" : text})
+            
         except json.JSONDecodeError:
             return JsonResponse({'error': 'Invalid JSON'}, status=400)
+        except Exception as e:
+            logger.error(f"Error in start_conversation: {e}")
+            return JsonResponse({'error': str(e)}, status=500)
     else:
         return JsonResponse({'error': 'Only POST requests are allowed'}, status=405)
+    
+def ensure_nltk_data():
+    nltk_data_path = os.path.join("..", 'nltk_data')
+    os.makedirs(nltk_data_path, exist_ok=True)
+    nltk.data.path.append(nltk_data_path)
+
+    resources = ['punkt', 'stopwords', 'averaged_perceptron_tagger']
+    for resource in resources:
+        try:
+            nltk.data.find(f'tokenizers/{resource}')
+        except LookupError:
+            print(f"Downloading {resource}...")
+            nltk.download(resource, download_dir=nltk_data_path, quiet=True)
+    
+    # 명시적으로 punkt_tab 다운로드
+    try:
+        nltk.data.find('tokenizers/punkt_tab')
+    except LookupError:
+        print("Downloading punkt_tab...")
+        nltk.download('punkt_tab', download_dir=nltk_data_path, quiet=True)
+
+def extract_keywords(AI_TEXT,top_n=5):
+    ensure_nltk_data()
+    okt = Okt()
+    try:
+        # 텍스트 전처리
+        stop_words = set(['을', '를', '이', '가', '은', '는', '에', '의', '와', '과', '으로', '로', '에서'])
+        # 형태소 분석 및 명사 추출
+        nouns = okt.nouns(AI_TEXT)
+        
+        # 불용어 제거 및 2글자 이상의 명사만 선택
+        filtered_nouns = [noun for noun in nouns if noun not in stop_words and len(noun) > 1]
+        
+        # 명사 리스트를 문자열로 변환
+        preprocessed_text = ' '.join(filtered_nouns)
+        
+        # TF-IDF 벡터화
+        vectorizer = TfidfVectorizer()
+        tfidf_matrix = vectorizer.fit_transform([preprocessed_text])
+        
+        # 단어와 그에 해당하는 TF-IDF 점수를 추출
+        feature_names = vectorizer.get_feature_names_out()
+        tfidf_scores = tfidf_matrix.toarray()[0]
+        
+        # TF-IDF 점수가 높은 순으로 정렬하여 상위 n개 추출
+        word_scores = list(zip(feature_names, tfidf_scores))
+        word_scores.sort(key=lambda x: x[1], reverse=True)
+        top_words = word_scores[:top_n]
+        return [word for word, score in top_words]
+
+
+    except Exception as e:
+        print(f"키워드 추출 중 오류 발생: {str(e)}")
+        return []
+
+    
+    
+def hello_world(request):
+     return HttpResponse("Hello World");
+
+
