@@ -314,6 +314,6 @@ def extract_keywords(AI_TEXT,top_n=5):
     
     
 def hello_world(request):
-     return HttpResponse("Hello World")
+     return HttpResponse("Hello World");
 
 
