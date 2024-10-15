@@ -29,8 +29,8 @@ class _LoginScreenState extends State<LoginScreen> {
         print('카카오톡으로 로그인 성공');
         try {
           User user = await UserApi.instance.me();
-          kakaoLogin.kakao(
-              user.kakaoAccount?.profile?.nickname, user.kakaoAccount?.email,authority);
+          kakaoLogin.kakao(user.kakaoAccount?.profile?.nickname,
+              user.kakaoAccount?.email, widget.authority);
         } catch (error) {
           print('사용자 정보 요청 실패 $error');
         }
@@ -48,8 +48,8 @@ class _LoginScreenState extends State<LoginScreen> {
           print('카카오계정으로 로그인 성공');
           try {
             User user = await UserApi.instance.me();
-            kakaoLogin.kakao(
-                user.kakaoAccount?.profile?.nickname, user.kakaoAccount?.email,authority);
+            kakaoLogin.kakao(user.kakaoAccount?.profile?.nickname,
+                user.kakaoAccount?.email, widget.authority);
           } catch (error) {
             print('사용자 정보 요청 실패 $error');
           }
@@ -63,8 +63,8 @@ class _LoginScreenState extends State<LoginScreen> {
         print('카카오계정으로 로그인 성공');
         try {
           User user = await UserApi.instance.me();
-          kakaoLogin.kakao(
-              user.kakaoAccount?.profile?.nickname, user.kakaoAccount?.email,authority);
+          kakaoLogin.kakao(user.kakaoAccount?.profile?.nickname,
+              user.kakaoAccount?.email, widget.authority);
         } catch (error) {
           print('사용자 정보 요청 실패 $error');
         }

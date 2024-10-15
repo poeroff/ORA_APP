@@ -257,7 +257,8 @@ async def start_conversation(request):
         return JsonResponse({'error': 'Only POST requests are allowed'}, status=405)
     
 def ensure_nltk_data():
-    nltk_data_path = os.path.join("..", 'nltk_data')
+    nltk_data_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'nltk_data')
+    print(nltk_data_path)
     os.makedirs(nltk_data_path, exist_ok=True)
     nltk.data.path.append(nltk_data_path)
 
