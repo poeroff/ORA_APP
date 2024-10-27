@@ -416,7 +416,7 @@ async def recommend_store(user_input,address):
     # 예시) 한식당, 문구점 뭐 이런거
     else:
         response = {
-            "message": "현재 해당 유형의 가게 정보는 존재하지 않습니다.",
+            "message": "죄송합니다, 현재 해당 유형의 가게 정보는 존재하지 않습니다.",
             "company": []
         }
         return JsonResponse(response)
