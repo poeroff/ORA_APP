@@ -52,6 +52,7 @@ async def start_program(request):
         print("무엇을 도와드릴까요?")
             # user_input = input("유저 : ")
         result = await recommend_store(user_input,address)
+        print(result)
         return result
     
     return JsonResponse({'error': 'Invalid request method'}, status=405)
