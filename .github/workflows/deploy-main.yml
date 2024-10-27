@@ -42,7 +42,7 @@ jobs:
               buildenv: []
             context:
               git:
-                url:git@github.com:poeroff/ORA_APP.git
+                url: git@github.com:poeroff/ORA_APP.git
                 ref: main
                 path: ora_back
               preset: node

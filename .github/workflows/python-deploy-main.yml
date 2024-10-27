@@ -40,5 +40,4 @@ jobs:
                 url: git@github.com:poeroff/ORA_APP.git
                 path : ora_python_back
                 ref: main
-                
               preset: python-django
