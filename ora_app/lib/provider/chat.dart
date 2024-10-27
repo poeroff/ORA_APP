@@ -17,9 +17,10 @@ class ChatApi {
         body: jsonEncode({"message": userInput, "address": currentAddress}));
     if (response.statusCode == 200) {
       // JSON 응답을 파싱
+      print(response.body);
       Map<String, dynamic> data = jsonDecode(response.body);
       // 'message' 키의 값을
-      print(data);
+      print(data['message']);
       return data['message'];
     } else {
       throw Exception(
