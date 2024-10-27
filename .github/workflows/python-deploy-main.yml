@@ -31,7 +31,7 @@ jobs:
                   value : https://port-0-ora-app-m1xq0ou447d4b62a.sel4.cloudtype.app
               ports: 8000
               install: |
-                pip install --upgrade pip && pip install -r requirements.txt
+                pip install --upgrade pip && pip install -r requirements.txt && pip install uvicorn
                
               start: python -m uvicorn ora_python_back.asgi:application --host 0.0.0.0 --port 8000
               buildenv: []
