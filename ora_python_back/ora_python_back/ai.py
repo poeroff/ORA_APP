@@ -86,7 +86,7 @@ async def recommend_store(user_input,address):
                     break
     
     if matching_stores:
-        # 유저 위치 설정!!!
+        # 유저 위치 설정!!
         user_location = address
 
         # 유저 위치에서 주소만 추출 (불용어 없앰)
