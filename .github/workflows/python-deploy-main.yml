@@ -27,7 +27,7 @@ jobs:
 
             options:
               env:
-                -name : NODE_BACKEND_SERVER
+                - name : NODE_BACKEND_SERVER
                   value : https://port-0-ora-app-m1xq0ou447d4b62a.sel4.cloudtype.app
               ports: 8000
               install: |
