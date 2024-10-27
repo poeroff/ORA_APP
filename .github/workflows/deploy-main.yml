@@ -26,7 +26,7 @@ jobs:
             options:
               env:
                 - name: DB_HOST
-                  value: ${{ secrets.DB_HOST }}
+                  value: ora.c7yoak2m8npu.ap-northeast-2.rds.amazonaws.com
                 - name: DB_PORT
                   value: "3306"
                 - name: DB_USERNAME
@@ -43,6 +43,5 @@ jobs:
             context:
               git:
                 url: git@github.com:poeroff/ORA_APP.git
-                ref: main
-                path: ora_back
+                ref: ${{ github.ref }}
               preset: node
