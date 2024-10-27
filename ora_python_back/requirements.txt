@@ -8,4 +8,3 @@ konlpy==0.6.0
 Django==5.0.2
 requests==2.31.0
 asgiref==3.7.2
-

@@ -1,17 +1,19 @@
 name: ora-app-django
-app: python@3.9
+app: python@3.12
 options:
   env:
     - name : NODE_BACKEND_SERVER
       value : https://port-0-ora-app-m1xq0ou447d4b62a.sel4.cloudtype.app
+    - name: DJANGO_SETTINGS_MODULE
+      value: ora_python_back.settings
   ports: 8000
   install: |
-    pip install --upgrade pip && pip install -r requirements.txt && pip install uvicorn
+    pip install --upgrade pip && pip install -r requirements.txt
   start: python -m uvicorn ora_python_back.asgi:application --host 0.0.0.0 --port 8000
   buildenv: []
 context:
   git:
     url: git@github.com:poeroff/ORA_APP.git
     branch: ora_python_back
-    ref : main
+    
   preset: python-django
