@@ -21,9 +21,6 @@ from ora_python_back import ai
 
 
 urlpatterns = [
-    path("",ai.hello_world),
     path("get_data_from_db", ai.get_data_from_db),
-    path('start_program', ai.start_program),
-  
-   
+    path('start_program', ai.start_program)
 ]
