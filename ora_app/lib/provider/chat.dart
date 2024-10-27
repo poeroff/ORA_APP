@@ -4,7 +4,7 @@ import "dart:convert";
 
 class ChatApi {
   static String apiUri =
-      "${dotenv.env["PYTHON_BACKEND_ADDRESS"]}/start_conversation";
+      "${dotenv.env["PYTHON_BACKEND_ADDRESS"]}/start_program";
 
   Uri uri = Uri.parse(apiUri);
 

@@ -11,7 +11,8 @@ import os
 
 logger = logging.getLogger(__name__)
 node_backend_server = os.environ.get("NODE_BACKEND_SERVER")
-@async_to_sync
+
+
 async def get_data_from_db():
     async with aiohttp.ClientSession() as session:
         try:
