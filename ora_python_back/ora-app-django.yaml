@@ -2,8 +2,7 @@ name: ora-app-django
 app: python@3.9
 options:
   env:
-    # - name: AI_APIKEY
-    #   value: ${{ secrets.AI_APIKEY }}
+    
     - name : NODE_BACKEND_SERVER
       value : https://port-0-ora-app-m1xq0ou447d4b62a.sel4.cloudtype.app
   ports: 8000
