@@ -30,8 +30,7 @@ async def get_data_from_db():
             logger.error(f"요청 중 오류 발생: {e}")
             return None
 
-@csrf_exempt
-@async_to_sync
+
 async def start_program(request):
     if request.method == 'POST':
         data = json.loads(request.body)
