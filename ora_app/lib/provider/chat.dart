@@ -19,7 +19,7 @@ class ChatApi {
       // JSON 응답을 파싱
       Map<String, dynamic> data = jsonDecode(response.body);
       // 'message' 키의 값을
-      print(data['message']);
+      print(data);
       return data['message'];
     } else {
       throw Exception(

@@ -24,7 +24,7 @@ from asgiref.sync import async_to_sync
 urlpatterns = [
     path("",ai.hello_world),
     path("get_data_from_db", ai.get_data_from_db),
-    path('start_conversation', ai.start_conversation)
+    path('start_program', ai.start_program)
   
    
 ]
