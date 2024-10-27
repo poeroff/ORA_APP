@@ -3,7 +3,6 @@ import re
 from asgiref.sync import async_to_sync
 from django.views.decorators.csrf import csrf_exempt
 import aiohttp # type: ignore
-import requests
 from django.http import JsonResponse, HttpResponse
 import logging
 import difflib
@@ -42,14 +41,14 @@ async def start_program(request):
             return JsonResponse({'error': 'Missing message parameter'}, status=400)
          
     # 대화 시작
-        print(json.dumps({"message": "대화를 시작하려면 '안녕오라'라고 말해보세요.", "company": []}, ensure_ascii=False))
+        print("대화를 시작하려면 '안녕오라'라고 말해보세요.")
         # user_input = input("유저 : ")
         # if user_input != '안녕오라':
         #     # 이상한 입력하면 대화 종료
         #     print(json.dumps({"message": "대화가 종료됩니다.", "company": []}, ensure_ascii=False))
         #     return
         # else:
-        print(json.dumps({"message": "무엇을 도와드릴까요?", "company": []}, ensure_ascii=False))
+        print("무엇을 도와드릴까요?")
             # user_input = input("유저 : ")
         result = await recommend_store(user_input,address)
         return result
