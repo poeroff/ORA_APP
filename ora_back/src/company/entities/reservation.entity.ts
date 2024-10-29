@@ -13,8 +13,8 @@ export class Reservation{
     @ManyToOne(() => Company , (Company) => Company.reservation)
     company : Company
 
-    @Column()
-    date : Date
+    // @Column()
+    // date : Date
 
     @CreateDateColumn()
     created_at: Date

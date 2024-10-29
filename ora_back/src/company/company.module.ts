@@ -8,9 +8,10 @@ import { Type } from './entities/type.entity';
 import { Rating } from './entities/rating.entity';
 import { Reservation } from './entities/reservation.entity';
 import { Atmosphere } from './entities/atmosphere.entity';
+import { User } from 'src/auth/entities/user.entity';
 
 @Module({
-  imports : [TypeOrmModule.forFeature([Company,Shop_menu,Type,Rating,Reservation,Atmosphere])],
+  imports : [TypeOrmModule.forFeature([Company,Shop_menu,Type,Rating,Reservation,Atmosphere,User])],
   controllers: [CompanyController],
   providers: [CompanyService],
 })

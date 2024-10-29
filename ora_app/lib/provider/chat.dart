@@ -13,12 +13,7 @@ class ChatApi {
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({"message": userInput, "address": currentAddress}));
     if (response.statusCode == 200) {
-      // JSON 응답을 파싱
-      print(response.body);
       Map<String, dynamic> data = jsonDecode(response.body);
-      // 'message' 키의 값을
-      print(data['message']);
-      print(data["company"]);
       return data;
     } else {
       throw Exception(

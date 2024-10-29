@@ -34,6 +34,7 @@ class _ChatScreenState extends State<ChatScreen> {
   String _wordsSpoken = "";
   double _confidenceLevel = 0;
   Timer? _debounceTimer;
+  var companyData;
 
   List<Chat> chat = [];
   final ChatApi _chatapi = ChatApi();
@@ -58,8 +59,7 @@ class _ChatScreenState extends State<ChatScreen> {
         Map<String, dynamic> responseData =
             await _chatapi.getmessage(_wordsSpoken, currentAddress);
         String aiResponse = responseData["message"];
-        var companyData = responseData["company"];
-        print(companyData);
+        companyData = responseData["company"];
 
         setState(() {
           chat.add(Chat(message: aiResponse));
@@ -120,7 +120,7 @@ class _ChatScreenState extends State<ChatScreen> {
     Map<String, dynamic> responseData =
         await _chatapi.getmessage(message, currentAddress);
     String aiResponse = responseData["message"];
-    var companyData = responseData["company"];
+    companyData = responseData["company"];
 
     setState(() {
       chat.add(Chat(message: aiResponse));
@@ -292,7 +292,7 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
-  void reservation(String id) async {
+  void reservation(int id) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await _recommandStore.recommand_store(id, prefs.getString("email"));
   }

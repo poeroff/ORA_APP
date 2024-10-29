@@ -34,8 +34,8 @@ class _LoginScreenState extends State<LoginScreen> {
           if (email != null) {
             prefs.setString("email", email);
           }
-          kakaoLogin.kakao(user.kakaoAccount?.profile?.nickname,
-              user.kakaoAccount?.email, widget.authority);
+          kakaoLogin.kakao(user.kakaoAccount?.email,
+              user.kakaoAccount?.profile?.nickname, widget.authority);
 
           prefs.setBool('isLoggedIn', true);
           Navigator.of(context).pushAndRemoveUntil(
@@ -63,8 +63,8 @@ class _LoginScreenState extends State<LoginScreen> {
             if (email != null) {
               prefs.setString("email", email);
             }
-            kakaoLogin.kakao(user.kakaoAccount?.profile?.nickname,
-                user.kakaoAccount?.email, widget.authority);
+            kakaoLogin.kakao(user.kakaoAccount?.email,
+                user.kakaoAccount?.profile?.nickname, widget.authority);
             prefs.setBool('isLoggedIn', true);
             Navigator.of(context).pushAndRemoveUntil(
               MaterialPageRoute(builder: (context) => const HomeScreen()),
@@ -88,8 +88,8 @@ class _LoginScreenState extends State<LoginScreen> {
             prefs.setString("email", email);
           }
 
-          kakaoLogin.kakao(user.kakaoAccount?.profile?.nickname,
-              user.kakaoAccount?.email, widget.authority);
+          kakaoLogin.kakao(user.kakaoAccount?.email,
+              user.kakaoAccount?.profile?.nickname, widget.authority);
           prefs.setBool('isLoggedIn', true);
 
           Navigator.of(context).pushAndRemoveUntil(

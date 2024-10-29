@@ -17,15 +17,13 @@ export class CompanyController {
     return await this.companyService.findall_company();
   }
 
-  @Post("recommand_stroe")
-  async recommand_stroe(){
-    return this.companyService.recommand_store();
-  }
+  
 
   @Post(':id')
-  find_company(@Param('id') id: string, @Body() body: { email: string; }) {
+  reservation_company(@Param('id') id: string, @Body() body: { email: string; }) {
     const { email } = body
-    console.log(id,email);
+    return this.companyService.reservation_company(+id,email);
+    
     
   }
 
