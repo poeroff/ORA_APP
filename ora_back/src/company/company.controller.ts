@@ -17,9 +17,16 @@ export class CompanyController {
     return await this.companyService.findall_company();
   }
 
-  @Get(':id')
-  find_company(@Param('id') id: string) {
-    return this.companyService.find_company(+id);
+  @Post("recommand_stroe")
+  async recommand_stroe(){
+    return this.companyService.recommand_store();
+  }
+
+  @Post(':id')
+  find_company(@Param('id') id: string, @Body() body: { email: string; }) {
+    const { email } = body
+    console.log(id,email);
+    
   }
 
   @Patch(':id')

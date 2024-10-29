@@ -16,7 +16,7 @@ Future<void> main() async {
 
   KakaoSdk.init(
       nativeAppKey: dotenv.env["KAKAO_NATIVEAPPKEY"],
-      javaScriptAppKey: dotenv.env["KAKAO_NATIVEAPPKEY"]);
+      javaScriptAppKey: dotenv.env["KAKAO_JAVASCRIPTAPPKEY"]);
 
   setPathUrlStrategy();
   runApp(MyApp(isLoggedIn: isLoggedIn));

@@ -73,7 +73,9 @@ export class CompanyService {
 
     
   }
-
+  recommand_store(){
+    
+  }
   
 
   update(id: number, updateCompanyDto: UpdateCompanyDto) {

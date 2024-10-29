@@ -80,7 +80,7 @@ async def recommend_store(user_input,address):
                 match = difflib.get_close_matches(keyword, store_types_list, n=1, cutoff=0.6)
                 if match:
                     # 일치하는 가게 matching_stores 리스트에 추가
-                    matching_stores.append({"location": store['location'], "name": store['name']})
+                    matching_stores.append({"id": store['id'], "location": store['location'], "name": store['name']})
 
                     # store_type은 dataset.json에서 각 가게별 type의 first_type 가져옴
                     store_type = t['first_type']

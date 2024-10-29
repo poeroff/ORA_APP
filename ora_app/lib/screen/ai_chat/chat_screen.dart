@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:ora_app/model/chat.model.dart';
+import 'package:ora_app/provider/recommand_store.dart';
+import 'package:ora_app/screen/home_screen.dart';
+import 'package:ora_app/screen/main/main_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
 import 'dart:async';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
@@ -23,6 +27,7 @@ class _ChatScreenState extends State<ChatScreen> {
   final ScrollController _scrollController = ScrollController();
   final Locationservice _locationservice = Locationservice();
   final GetAddress _address = GetAddress();
+
   String currentAddress = '';
   final SpeechToText _speechToText = SpeechToText();
   bool _speechEnables = false;
@@ -32,6 +37,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   List<Chat> chat = [];
   final ChatApi _chatapi = ChatApi();
+  final RecommandStore _recommandStore = RecommandStore();
 
   final StreamController<List<Chat>> _chatStreamController =
       StreamController<List<Chat>>.broadcast();
@@ -49,8 +55,12 @@ class _ChatScreenState extends State<ChatScreen> {
           chat.add(Chat(message: _wordsSpoken));
           _chatStreamController.add(chat);
         });
-        String aiResponse =
+        Map<String, dynamic> responseData =
             await _chatapi.getmessage(_wordsSpoken, currentAddress);
+        String aiResponse = responseData["message"];
+        var companyData = responseData["company"];
+        print(companyData);
+
         setState(() {
           chat.add(Chat(message: aiResponse));
           _chatStreamController.add(chat);
@@ -107,14 +117,184 @@ class _ChatScreenState extends State<ChatScreen> {
       _chatStreamController.add(chat);
     });
 
-    String aiResponse = await _chatapi.getmessage(message, currentAddress);
+    Map<String, dynamic> responseData =
+        await _chatapi.getmessage(message, currentAddress);
+    String aiResponse = responseData["message"];
+    var companyData = responseData["company"];
+
     setState(() {
       chat.add(Chat(message: aiResponse));
       _chatStreamController.add(chat);
     });
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _scrollToBottom();
-    });
+
+    if (companyData.length > 0) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _scrollToBottom();
+        showModalBottomSheet(
+          context: context,
+          builder: (BuildContext context) {
+            return Container(
+              child: ListView(
+                children: [
+                  SizedBox(height: 16),
+                  ...companyData.map((company) => Container(
+                        padding: EdgeInsets.symmetric(vertical: 8),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              flex: 55,
+                              child: Container(
+                                padding: EdgeInsets.only(left: 16),
+                                height: 200,
+                                child: ClipRRect(
+                                  // 이미지도 모서리를 둥글게 하려면 추가
+                                  borderRadius: BorderRadius.circular(16),
+                                  child: Image.asset(
+                                    'images/assets/capture.PNG',
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              flex: 45,
+                              child: Container(
+                                height: 200, // 이미지와 같은 높이로 설정
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment
+                                      .spaceBetween, // 내용물을 위아래로 분산
+                                  children: [
+                                    Padding(
+                                      padding: EdgeInsets.only(left: 8),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Padding(
+                                                  padding: EdgeInsets.only(
+                                                      left: 14)),
+                                              Text(
+                                                company['name'],
+                                                style: TextStyle(
+                                                  fontSize: 19,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          const SizedBox(height: 6),
+                                          const Row(
+                                            children: [
+                                              Padding(
+                                                  padding: EdgeInsets.only(
+                                                      left: 14)),
+                                              Icon(Icons.star,
+                                                  color: Colors.blue, size: 20),
+                                              Icon(Icons.star,
+                                                  color: Colors.blue, size: 20),
+                                              Icon(Icons.star,
+                                                  color: Colors.blue, size: 20),
+                                              Icon(Icons.star,
+                                                  color: Colors.blue, size: 20),
+                                              Icon(Icons.star_border,
+                                                  color: Colors.blue, size: 20),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding:
+                                          EdgeInsets.symmetric(horizontal: 8),
+                                      child: SizedBox(
+                                        width: double.infinity,
+                                        child: ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                              backgroundColor: Color.fromARGB(
+                                                  255, 212, 212, 219)),
+                                          onPressed: () {},
+                                          child: Text(
+                                            '업체 정보',
+                                            style:
+                                                TextStyle(color: Colors.black),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding:
+                                          EdgeInsets.symmetric(horizontal: 8),
+                                      child: SizedBox(
+                                        width: double.infinity,
+                                        child: ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                              backgroundColor:
+                                                  Color(0xff4255F8)),
+                                          onPressed: () {
+                                            showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return AlertDialog(
+                                                  title: Text('예약하시겠습니까?'),
+                                                  actions: <Widget>[
+                                                    TextButton(
+                                                      child: Text('취소'),
+                                                      onPressed: () {
+                                                        Navigator.of(context)
+                                                            .pop(); // 다이얼로그 닫기
+                                                      },
+                                                    ),
+                                                    TextButton(
+                                                      child: Text('확인'),
+                                                      onPressed: () {
+                                                        reservation(
+                                                          company["id"],
+                                                        );
+                                                        Navigator.of(context).push(
+                                                            MaterialPageRoute(
+                                                                builder:
+                                                                    (context) =>
+                                                                        const HomeScreen()));
+                                                      },
+                                                    ),
+                                                  ],
+                                                );
+                                              },
+                                            );
+                                          },
+                                          child: Text(
+                                            '예약가능',
+                                            style:
+                                                TextStyle(color: Colors.white),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      )),
+                ],
+              ),
+            );
+          },
+        );
+      });
+    }
+  }
+
+  void reservation(String id) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await _recommandStore.recommand_store(id, prefs.getString("email"));
   }
 
   @override

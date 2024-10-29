@@ -8,10 +8,7 @@ class ChatApi {
 
   Uri uri = Uri.parse(apiUri);
 
-  Future<String> getmessage(userInput, currentAddress) async {
-    print(userInput);
-    print(currentAddress);
-    print(uri);
+  Future<Map<String, dynamic>> getmessage(userInput, currentAddress) async {
     final response = await http.post(uri,
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({"message": userInput, "address": currentAddress}));
@@ -21,7 +18,8 @@ class ChatApi {
       Map<String, dynamic> data = jsonDecode(response.body);
       // 'message' 키의 값을
       print(data['message']);
-      return data['message'];
+      print(data["company"]);
+      return data;
     } else {
       throw Exception(
           "Failed to load news. Status code: ${response.statusCode}");

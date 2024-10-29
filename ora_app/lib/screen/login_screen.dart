@@ -4,6 +4,7 @@ import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 import 'package:ora_app/api/kakao_login.dart';
 import 'package:ora_app/screen/home_screen.dart';
 import 'package:ora_app/screen/login/registration_screen.dart';
+import 'package:ora_app/screen/main/main_screen.dart';
 import 'package:ora_app/screen/user_type_selection_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -22,15 +23,25 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final KakaoLogin kakaoLogin = KakaoLogin();
   Future<void> _KaKaologinButton() async {
-    print(await KakaoSdk.origin);
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     if (await isKakaoTalkInstalled()) {
       try {
         await UserApi.instance.loginWithKakaoTalk();
         print('카카오톡으로 로그인 성공');
         try {
           User user = await UserApi.instance.me();
+          String? email = user.kakaoAccount?.email;
+          if (email != null) {
+            prefs.setString("email", email);
+          }
           kakaoLogin.kakao(user.kakaoAccount?.profile?.nickname,
               user.kakaoAccount?.email, widget.authority);
+
+          prefs.setBool('isLoggedIn', true);
+          Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => const HomeScreen()),
+            (Route<dynamic> route) => false,
+          );
         } catch (error) {
           print('사용자 정보 요청 실패 $error');
         }
@@ -48,8 +59,17 @@ class _LoginScreenState extends State<LoginScreen> {
           print('카카오계정으로 로그인 성공');
           try {
             User user = await UserApi.instance.me();
+            String? email = user.kakaoAccount?.email;
+            if (email != null) {
+              prefs.setString("email", email);
+            }
             kakaoLogin.kakao(user.kakaoAccount?.profile?.nickname,
                 user.kakaoAccount?.email, widget.authority);
+            prefs.setBool('isLoggedIn', true);
+            Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (context) => const HomeScreen()),
+              (Route<dynamic> route) => false,
+            );
           } catch (error) {
             print('사용자 정보 요청 실패 $error');
           }
@@ -63,8 +83,19 @@ class _LoginScreenState extends State<LoginScreen> {
         print('카카오계정으로 로그인 성공');
         try {
           User user = await UserApi.instance.me();
+          String? email = user.kakaoAccount?.email;
+          if (email != null) {
+            prefs.setString("email", email);
+          }
+
           kakaoLogin.kakao(user.kakaoAccount?.profile?.nickname,
               user.kakaoAccount?.email, widget.authority);
+          prefs.setBool('isLoggedIn', true);
+
+          Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => const HomeScreen()),
+            (Route<dynamic> route) => false,
+          );
         } catch (error) {
           print('사용자 정보 요청 실패 $error');
         }
