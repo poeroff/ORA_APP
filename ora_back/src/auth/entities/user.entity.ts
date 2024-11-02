@@ -3,7 +3,7 @@ import { Res } from "@nestjs/common";
 import { Company } from "src/company/entities/company.entity";
 import { Rating } from "src/company/entities/rating.entity";
 import { Reservation } from "src/company/entities/reservation.entity";
-import { AfterLoad, BeforeInsert, BeforeUpdate, Column, CreateDateColumn, DeleteDateColumn, Entity, OneToMany, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
+import { AfterLoad, BeforeInsert, BeforeUpdate, Column, CreateDateColumn, DeleteDateColumn, Entity, Index, OneToMany, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
 
 
 @Entity()
@@ -30,6 +30,7 @@ export class User {
     gender: string
 
     @Column()
+    @Index()
     email: string
 
     @Column({nullable : true})

@@ -95,6 +95,14 @@ export class CompanyService {
 
     
   }
+  async today_reservation(email : string){
+    const user = await this.userRepository.findOne({
+      where: { email },
+      relations: ['reservation', 'reservation.company']
+    });
+  
+    return user.reservation;
+  }
   
 
   update(id: number, updateCompanyDto: UpdateCompanyDto) {

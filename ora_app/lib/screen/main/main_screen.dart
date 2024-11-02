@@ -1,7 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:ora_app/provider/today_reservation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class MainScreen extends StatelessWidget {
+class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
+  @override
+  State<StatefulWidget> createState() {
+    return _MainScreenState();
+  }
+}
+
+class _MainScreenState extends State<MainScreen> {
+  TodayReservation todayReservation = TodayReservation();
+
+  var reservation;
+
+  @override
+  void initState() {
+    super.initState();
+    reservation();
+  }
+
+  void reservationStatus() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    Map<String, dynamic> responseData =
+        await todayReservation.today_reservation(prefs.getString("email"));
+  }
 
   @override
   Widget build(BuildContext context) {
