@@ -95,8 +95,7 @@ export class CompanyService {
   if(user_reservation){
     return {message : "이미 예약한 업체입니다.",status : 409}
   }
-  const reservation = this.reservationRepository.create({user : user, company: compnay});
-  return await this.reservationRepository.save(reservation);
+  return await this.reservationRepository.save({user : user, company: compnay});
   }
 
   async today_reservation(email : string){
