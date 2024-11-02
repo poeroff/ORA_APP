@@ -6,8 +6,6 @@ class RecommandStore {
   Future<String> recommand_store(id, email) async {
     String apiUri = "${dotenv.env["NODE_BACKEND_ADDRESS"]}/company/$id";
     Uri uri = Uri.parse(apiUri);
-    print(id);
-    print(email);
     final response = await http.post(uri,
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ora_app/model/reservation.dart';
 import 'package:ora_app/provider/today_reservation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -13,18 +14,22 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   TodayReservation todayReservation = TodayReservation();
 
-  var reservation;
+  List<Reservation> reservations = [];
 
   @override
   void initState() {
     super.initState();
-    reservation();
+    reservationStatus();
   }
 
   void reservationStatus() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    Map<String, dynamic> responseData =
+    List<Reservation> fetchedReservations =
         await todayReservation.today_reservation(prefs.getString("email"));
+    setState(() {
+      reservations = fetchedReservations;
+    });
+    print(reservations);
   }
 
   @override
@@ -59,8 +64,10 @@ class _MainScreenState extends State<MainScreen> {
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.symmetric(horizontal: 30),
-              itemCount: 5, // 카드 개수
+              itemCount: reservations.length, // 실제 예약 개수
               itemBuilder: (context, index) {
+                final reservation = reservations[index];
+                print(reservation);
                 return Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Container(
@@ -85,25 +92,21 @@ class _MainScreenState extends State<MainScreen> {
                             fit: BoxFit.cover,
                           ),
                         ),
-                        const Padding(
-                          padding: EdgeInsets.all(16.0),
+                        Padding(
+                          padding: const EdgeInsets.all(16.0),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('강남이비인후과',
-                                  style: TextStyle(
+                              Text(reservation.company.name,
+                                  style: const TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold)),
-                              SizedBox(height: 10),
-                              Text('예약일: 2024년 9월 23일'),
-                              SizedBox(height: 10),
-                              Text('예약시간: 오후 01시 00분'),
-                              SizedBox(height: 10),
-                              Text('예약자: 김혜진'),
-                              SizedBox(height: 10),
-                              Text('진료과목: 오랄리저리 성 비뇨'),
-                              SizedBox(height: 10),
-                              Text('위치: 강일 춘천시 강원대학교 1'),
+
+                              const SizedBox(height: 10),
+                              const Text(
+                                  '진료과목: [진료과목 정보 없음]'), // 진료과목 정보가 없으면 이 부분을 수정해야 합니다
+                              const SizedBox(height: 10),
+                              Text('위치: ${reservation.company.location}'),
                             ],
                           ),
                         ),
