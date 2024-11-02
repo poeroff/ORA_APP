@@ -13,13 +13,22 @@ class Reservation {
 
   factory Reservation.fromJson(Map<String, dynamic> json) {
     return Reservation(
-      id: json['id'],
-      createdAt: DateTime.parse(json['created_at']),
+      id: json['id'] as int,
+      createdAt: DateTime.parse(json['created_at'] as String),
       deletedAt: json['deleted_at'] != null
-          ? DateTime.parse(json['deleted_at'])
+          ? DateTime.parse(json['deleted_at'] as String)
           : null,
-      company: Company.fromJson(json['company']),
+      company: Company.fromJson(json['company'] as Map<String, dynamic>),
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'createdAt': createdAt.toIso8601String(),
+      'deletedAt': deletedAt?.toIso8601String(),
+      'company': company.toJson(),
+    };
   }
 }
 
@@ -38,10 +47,19 @@ class Company {
 
   factory Company.fromJson(Map<String, dynamic> json) {
     return Company(
-      id: json['id'],
-      name: json['name'],
-      location: json['location'],
-      totalRating: json['total_rating'],
+      id: json['id'] as int,
+      name: json['name'] as String,
+      location: json['location'] as String,
+      totalRating: json['total_rating'] as int,
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'location': location,
+      'total_rating': totalRating,
+    };
   }
 }

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:ora_app/model/reservation.dart';
 import 'package:ora_app/provider/today_reservation.dart';
@@ -7,7 +8,9 @@ import 'package:ora_app/screen/main/main_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<HomeScreen> createState() => HomeScreenState();
@@ -15,157 +18,137 @@ class HomeScreen extends StatefulWidget {
 
 class HomeScreenState extends State<HomeScreen> {
   int currentPageIndex = 0;
-  TodayReservation todayReservation = TodayReservation();
-
+  final TodayReservation todayReservation = TodayReservation();
   List<Reservation> reservations = [];
+  bool isLoading = false;
 
   @override
   void initState() {
     super.initState();
-    reservationStatus();
+    _fetchReservations();
   }
 
-  void reservationStatus() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<Reservation> fetchedReservations =
-        await todayReservation.today_reservation(prefs.getString("email"));
-    setState(() {
-      reservations = fetchedReservations;
-    });
-    print(reservations);
+  Future<void> _fetchReservations() async {
+    setState(() => isLoading = true);
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final email = prefs.getString("email");
+      if (email != null) {
+        final fetchedReservations =
+            await todayReservation.today_reservation(email);
+        setState(() {
+          reservations = fetchedReservations;
+          _saveReservations();
+        });
+      }
+    } finally {
+      setState(() => isLoading = false);
+    }
+  }
+
+  Future<void> _saveReservations() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final reservationsJson =
+          jsonEncode(reservations.map((r) => r.toJson()).toList());
+      await prefs.setString('savedReservations', reservationsJson);
+    } catch (e) {
+      print('예약 정보 저장 중 오류 발생: $e');
+    }
+  }
+
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('오류'),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('확인'),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
     return Scaffold(
       extendBody: true,
-      bottomNavigationBar: Stack(
-        clipBehavior: Clip.none,
-        alignment: Alignment.topCenter,
-        children: [
-          CustomNavigationBar(
-            currentIndex: currentPageIndex,
-            onTap: (index) {
-              setState(() {
-                currentPageIndex = index;
-                if (index == 3) {
-                  _showLogoutDialog(context);
-                }
-              });
-            },
-          ),
-          Positioned(
-            top: -15,
-            child: GestureDetector(
-              onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const ChatScreen()));
-              },
-              child: Container(
-                width: 60,
-                height: 60,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.2),
-                      spreadRadius: 1,
-                      blurRadius: 3,
-                      offset: const Offset(0, 1),
-                    ),
-                  ],
-                ),
-                child: ClipOval(
-                  child: Image.asset(
-                    'images/assets/capture.PNG',
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-      body: <Widget>[
-        MainScreen(
-          reservations: reservations,
-        ),
-        const Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Column(
-            children: <Widget>[
-              Card(
-                child: ListTile(
-                  leading: Icon(Icons.notifications_sharp),
-                  title: Text('Notification 1'),
-                  subtitle: Text('This is a notification'),
-                ),
-              ),
-              Card(
-                child: ListTile(
-                  leading: Icon(Icons.notifications_sharp),
-                  title: Text('Notification 2'),
-                  subtitle: Text('This is a notification'),
-                ),
-              ),
-            ],
-          ),
-        ),
-        ListView.builder(
-          reverse: true,
-          itemCount: 2,
-          itemBuilder: (BuildContext context, int index) {
-            if (index == 0) {
-              return Align(
-                alignment: Alignment.centerRight,
-                child: Container(
-                  margin: const EdgeInsets.all(8.0),
-                  padding: const EdgeInsets.all(8.0),
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.primary,
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  child: Text(
-                    'Hello',
-                    style: theme.textTheme.bodyLarge!
-                        .copyWith(color: theme.colorScheme.onPrimary),
-                  ),
-                ),
-              );
-            }
-            return Align(
-              alignment: Alignment.centerLeft,
-              child: Container(
-                margin: const EdgeInsets.all(8.0),
-                padding: const EdgeInsets.all(8.0),
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.primary,
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                child: Text(
-                  'Hi!',
-                  style: theme.textTheme.bodyLarge!
-                      .copyWith(color: theme.colorScheme.onPrimary),
-                ),
-              ),
-            );
+      bottomNavigationBar: _buildBottomNavigationBar(),
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : _buildBody(),
+    );
+  }
+
+  Widget _buildBottomNavigationBar() {
+    return Stack(
+      clipBehavior: Clip.none,
+      alignment: Alignment.topCenter,
+      children: [
+        CustomNavigationBar(
+          currentIndex: currentPageIndex,
+          onTap: (index) {
+            setState(() {
+              currentPageIndex = index;
+              if (index == 3) {
+                _showLogoutDialog(context);
+              }
+            });
           },
         ),
-        Card(
-          shadowColor: Colors.transparent,
-          margin: const EdgeInsets.all(8.0),
-          child: SizedBox.expand(
-            child: Center(
-              child: Text(
-                'Home page',
-                style: theme.textTheme.titleLarge,
-              ),
+        Positioned(
+          top: -15,
+          child: _buildChatButton(),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildChatButton() {
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => const ChatScreen(),
+        ));
+      },
+      child: Container(
+        width: 60,
+        height: 60,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          shape: BoxShape.circle,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.2),
+              spreadRadius: 1,
+              blurRadius: 3,
+              offset: const Offset(0, 1),
             ),
+          ],
+        ),
+        child: ClipOval(
+          child: Image.asset(
+            'images/assets/capture.PNG',
+            fit: BoxFit.cover,
           ),
         ),
-      ][currentPageIndex],
+      ),
+    );
+  }
+
+  Widget _buildBody() {
+    return IndexedStack(
+      index: currentPageIndex,
+      children: [
+        MainScreen(reservations: reservations),
+        const NotificationsScreen(),
+        const ChatListScreen(),
+        const HomePage(),
+      ],
     );
   }
 
@@ -174,38 +157,29 @@ class HomeScreenState extends State<HomeScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          titleTextStyle: Theme.of(context).textTheme.titleLarge!.copyWith(
-                color: Theme.of(context).colorScheme.onPrimaryContainer,
-              ),
-          backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-          iconColor: Theme.of(context).colorScheme.onPrimaryContainer,
-          contentTextStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                color: Theme.of(context).colorScheme.onPrimaryContainer,
-              ),
           title: const Text('로그아웃'),
           content: const Text('정말 로그아웃하시겠습니까?'),
           actions: <Widget>[
             TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
+              onPressed: () => Navigator.pop(context),
               child: const Text('취소'),
             ),
             TextButton(
-              onPressed: () async {
-                Navigator.of(context).pushReplacement(MaterialPageRoute(
-                    builder: (context) => const LoginScreen(
-                          authority: "OWNER",
-                        )));
-                SharedPreferences prefs = await SharedPreferences.getInstance();
-                await prefs.setBool('isLoggedIn', false);
-              },
+              onPressed: _logout,
               child: const Text('확인'),
             ),
           ],
         );
       },
     );
+  }
+
+  Future<void> _logout() async {
+    Navigator.of(context).pushReplacement(MaterialPageRoute(
+      builder: (context) => const LoginScreen(authority: "OWNER"),
+    ));
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isLoggedIn', false);
   }
 }
 
@@ -214,10 +188,10 @@ class CustomNavigationBar extends StatelessWidget {
   final Function(int) onTap;
 
   const CustomNavigationBar({
-    super.key,
+    Key? key,
     required this.currentIndex,
     required this.onTap,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -240,7 +214,7 @@ class CustomNavigationBar extends StatelessWidget {
           _buildNavItem(Icons.home, Icons.home_outlined, '홈', 0),
           _buildNavItem(
               Icons.calendar_today, Icons.calendar_today_outlined, '예약', 1),
-          const SizedBox(width: 60), // 가운데 버튼을 위한 공간
+          const SizedBox(width: 60),
           _buildNavItem(Icons.person, Icons.person_outline, 'MY', 2),
           _buildNavItem(Icons.more_horiz, Icons.more_horiz_outlined, '더보기', 3),
         ],
@@ -273,5 +247,33 @@ class CustomNavigationBar extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+// 추가적인 화면들은 별도의 파일로 분리하는 것이 좋습니다.
+class NotificationsScreen extends StatelessWidget {
+  const NotificationsScreen({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(child: Text('Notifications Screen'));
+  }
+}
+
+class ChatListScreen extends StatelessWidget {
+  const ChatListScreen({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(child: Text('Chat List Screen'));
+  }
+}
+
+class HomePage extends StatelessWidget {
+  const HomePage({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(child: Text('Home Page'));
   }
 }

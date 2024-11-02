@@ -256,11 +256,6 @@ class _ChatScreenState extends State<ChatScreen> {
                                                         reservation(
                                                           company["id"],
                                                         );
-                                                        Navigator.of(context).push(
-                                                            MaterialPageRoute(
-                                                                builder:
-                                                                    (context) =>
-                                                                        const HomeScreen()));
                                                       },
                                                     ),
                                                   ],
@@ -295,6 +290,11 @@ class _ChatScreenState extends State<ChatScreen> {
   void reservation(int id) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await _recommandStore.recommand_store(id, prefs.getString("email"));
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (context) => HomeScreen(),
+      ),
+    );
   }
 
   @override

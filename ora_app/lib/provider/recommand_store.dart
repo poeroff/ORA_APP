@@ -12,6 +12,10 @@ class RecommandStore {
           "email": email,
         }));
     if (response.statusCode == 200 || response.statusCode == 201) {
+      Map<String, dynamic> data = jsonDecode(response.body);
+      if (data['status'] == 409) {
+        return "409";
+      }
       return "200";
     } else {
       throw Exception(
