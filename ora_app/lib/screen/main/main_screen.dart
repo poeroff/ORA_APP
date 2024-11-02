@@ -3,38 +3,13 @@ import 'package:ora_app/model/reservation.dart';
 import 'package:ora_app/provider/today_reservation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class MainScreen extends StatefulWidget {
-  const MainScreen({super.key});
-  @override
-  State<StatefulWidget> createState() {
-    return _MainScreenState();
-  }
-}
+class MainScreen extends StatelessWidget {
+  const MainScreen({super.key, required this.reservations});
 
-class _MainScreenState extends State<MainScreen> {
-  TodayReservation todayReservation = TodayReservation();
-
-  List<Reservation> reservations = [];
-
-  @override
-  void initState() {
-    super.initState();
-    reservationStatus();
-  }
-
-  void reservationStatus() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<Reservation> fetchedReservations =
-        await todayReservation.today_reservation(prefs.getString("email"));
-    setState(() {
-      reservations = fetchedReservations;
-    });
-    print(reservations);
-  }
+  final List<Reservation> reservations;
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Scaffold(
       body: Column(
         children: [

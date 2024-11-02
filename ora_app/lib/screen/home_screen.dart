@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:ora_app/model/reservation.dart';
+import 'package:ora_app/provider/today_reservation.dart';
 import 'package:ora_app/screen/ai_chat/chat_screen.dart';
 import 'package:ora_app/screen/login_screen.dart';
 import 'package:ora_app/screen/main/main_screen.dart';
@@ -13,6 +15,25 @@ class HomeScreen extends StatefulWidget {
 
 class HomeScreenState extends State<HomeScreen> {
   int currentPageIndex = 0;
+  TodayReservation todayReservation = TodayReservation();
+
+  List<Reservation> reservations = [];
+
+  @override
+  void initState() {
+    super.initState();
+    reservationStatus();
+  }
+
+  void reservationStatus() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<Reservation> fetchedReservations =
+        await todayReservation.today_reservation(prefs.getString("email"));
+    setState(() {
+      reservations = fetchedReservations;
+    });
+    print(reservations);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +89,9 @@ class HomeScreenState extends State<HomeScreen> {
         ],
       ),
       body: <Widget>[
-        const MainScreen(),
+        MainScreen(
+          reservations: reservations,
+        ),
         const Padding(
           padding: EdgeInsets.all(8.0),
           child: Column(

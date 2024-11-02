@@ -86,7 +86,7 @@ export class CompanyService {
   if(!user){
     throw new NotFoundException("일치하는 업체가 없습니다.");
   }
-  const user_reservation = this.reservationRepository.findOne({
+  const user_reservation = await this.reservationRepository.findOne({
     where: { 
       user: { id: user.id }, 
       company: { id: compnay.id }  // 주의: company로 수정해야 함
