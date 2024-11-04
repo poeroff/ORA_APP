@@ -38,39 +38,11 @@ class HomeScreenState extends State<HomeScreen> {
             await todayReservation.today_reservation(email);
         setState(() {
           reservations = fetchedReservations;
-          _saveReservations();
         });
       }
     } finally {
       setState(() => isLoading = false);
     }
-  }
-
-  Future<void> _saveReservations() async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      final reservationsJson =
-          jsonEncode(reservations.map((r) => r.toJson()).toList());
-      await prefs.setString('savedReservations', reservationsJson);
-    } catch (e) {
-      print('예약 정보 저장 중 오류 발생: $e');
-    }
-  }
-
-  void _showErrorDialog(String message) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('오류'),
-        content: Text(message),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('확인'),
-          ),
-        ],
-      ),
-    );
   }
 
   @override
@@ -80,7 +52,12 @@ class HomeScreenState extends State<HomeScreen> {
       bottomNavigationBar: _buildBottomNavigationBar(),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
-          : _buildBody(),
+          : SingleChildScrollView(
+              child: Container(
+                height: MediaQuery.of(context).size.height,
+                child: _buildBody(),
+              ),
+            ),
     );
   }
 
